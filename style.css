@@ -8,10 +8,12 @@
      3. Base typography  (Host Grotesk across the entire document)
      4. Icons            (Lucide)
      5. Layout primitives
-     6. Components       (skip link, header, buttons, footer)
-     7. Starter content  (hero + specimen — safe to delete)
-     8. Utilities
-     9. Accessibility & motion preferences
+     6. Background video (fixed, full-screen — no blur anywhere)
+     7. Navigation       (.navbar, .brand, .nav-link, .pill)
+     8. Hero             (.hero, .mailbox, .med-card, .slider, watermark)
+     9. Background control (.video-toggle)
+    10. Utilities
+    11. Accessibility & motion preferences
    ========================================================================== */
 
 
@@ -40,18 +42,19 @@
   /* Colour — dark theme (hero) */
   --color-bg: #07090e;
   --color-text: #ffffff;
-  --color-text-muted: rgba(255, 255, 255, 0.64);
-  --color-text-faint: rgba(255, 255, 255, 0.52);   /* 5.7:1 on --color-bg — AA for small text */
+  --color-text-muted: rgba(255, 255, 255, 0.72);
+  --color-text-faint: rgba(255, 255, 255, 0.52);   /* AA for small text on --color-bg */
   --color-glass: rgba(255, 255, 255, 0.18);
   --color-glass-strong: rgba(255, 255, 255, 0.28);
-  --color-surface: rgba(255, 255, 255, 0.06);
-  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border: rgba(255, 255, 255, 0.14);
 
-  /* Colour — light theme (benefits section) */
+  /* Colour — light surfaces (cards, and the Prompt 6 benefits section) */
   --color-light-bg: #ffffff;
   --color-light-surface: #f8fafc;
   --color-slate-900: #0f172a;
   --color-slate-500: #64748b;
+  --color-control: #d5d5d7;          /* "More info" button fill */
+  --color-control-hover: #c7c7ca;
 
   /* Radii */
   --radius-sm: 0.5rem;
@@ -72,9 +75,9 @@
   --space-9: 6rem;
 
   /* Layout */
-  --container-max: 80rem;                     /* 1280px */
-  --container-pad: clamp(1rem, 4vw, 2.5rem);
-  --header-height: 5.5rem;
+  --container-max: 90rem;                     /* 1440px */
+  --container-pad: clamp(1.25rem, 3.5vw, 3.5rem);
+  --navbar-height: 5.5rem;
 
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -161,10 +164,6 @@ h1, h2, h3, h4, h5, h6 {
   overflow-wrap: break-word;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  text-wrap: balance;
-}
-
 :target {
   scroll-margin-block: var(--space-6);
 }
@@ -188,24 +187,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: var(--fw-medium);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
-}
-
-h1 {
-  font-size: clamp(2.75rem, 1.5rem + 6vw, 5.5rem);
-  font-weight: var(--fw-regular);
-  line-height: var(--leading-tight);
-}
-
-h2 {
-  font-size: clamp(1.75rem, 1.2rem + 2.5vw, 2.75rem);
-}
-
-h3 {
-  font-size: clamp(1.25rem, 1rem + 1vw, 1.625rem);
-}
-
-small {
-  font-size: 0.875rem;
 }
 
 /* Code is the one deliberate exception to Host Grotesk. `font-size: 1em`
@@ -250,10 +231,6 @@ samp {
   margin-inline: auto;
 }
 
-
-/* 6. Components
-   -------------------------------------------------------------------------- */
-
 /* Skip link — visible only when focused */
 .skip-link {
   position: absolute;
@@ -273,122 +250,13 @@ samp {
   transform: translateY(0);
 }
 
-/* Header */
-.site-header {
-  border-bottom: 1px solid var(--color-border);
-}
 
-.site-header__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  min-height: var(--header-height);
-}
-
-.site-header__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.site-header__tag {
-  font-size: 0.8125rem;
-  font-weight: var(--fw-medium);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  color: var(--color-text-faint);
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: 1.5rem;
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tracking-tight);
-}
-
-.brand .lucide,
-.brand [data-lucide] {
-  font-size: 1.75rem;
-}
-
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-height: 2.75rem;
-  padding: 0 var(--space-5);
-  border: 1px solid transparent;
-  border-radius: var(--radius-pill);
-  font-weight: var(--fw-medium);
-  line-height: 1;
-  white-space: nowrap;
-  transition:
-    background-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out);
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-.btn--primary {
-  background-color: var(--color-text);
-  color: var(--color-bg);
-}
-
-.btn--primary:hover {
-  background-color: rgba(255, 255, 255, 0.88);
-}
-
-.btn--ghost {
-  background-color: var(--color-glass);
-  border-color: var(--color-border);
-  color: var(--color-text);
-}
-
-.btn--ghost:hover {
-  background-color: var(--color-glass-strong);
-}
-
-.btn--sm {
-  min-height: 2.25rem;
-  padding: 0 var(--space-4);
-  font-size: 0.8125rem;
-}
-
-/* Background pause/play control. Sits above the fixed video stage. */
-.video-toggle {
-  position: relative;
-  z-index: 1;
-}
-
-/* Footer */
-.site-footer {
-  margin-block-start: var(--space-9);
-  border-top: 1px solid var(--color-border);
-  color: var(--color-text-muted);
-  font-size: 0.875rem;
-}
-
-.site-footer__inner {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding-block: var(--space-6);
-}
-
-/* Hero video — full-screen fixed background
+/* 6. Background video — full-screen fixed
    The <video> plays forward; the <canvas> is revealed by script.js only
    while cached frames play in reverse. Both share the same box and
    object-fit so the swap is invisible. The overlay is a plain radial
-   gradient — deliberately NO blur / backdrop-filter anywhere here. */
+   gradient — deliberately NO blur / backdrop-filter anywhere here.
+   -------------------------------------------------------------------------- */
 .hero-video {
   position: fixed;
   inset: 0;
@@ -411,140 +279,467 @@ samp {
 .hero-video__overlay {
   position: absolute;
   inset: 0;
+  /* Two stacked radials, no blur:
+     1. a soft pool over the left column so the hero copy stays legible on the
+        clip's bright beige frames — it fades to nothing well before the ring;
+     2. the overall vignette. */
   background:
     radial-gradient(
+      72% 62% at 20% 52%,
+      rgba(7, 9, 14, 0.46) 0%,
+      rgba(7, 9, 14, 0.22) 62%,
+      rgba(7, 9, 14, 0) 100%
+    ),
+    radial-gradient(
       120% 100% at 50% 45%,
-      rgba(7, 9, 14, 0.18) 0%,
-      rgba(7, 9, 14, 0.42) 55%,
-      rgba(7, 9, 14, 0.78) 100%
+      rgba(7, 9, 14, 0.30) 0%,
+      rgba(7, 9, 14, 0.52) 55%,
+      rgba(7, 9, 14, 0.82) 100%
     );
 }
 
 
-/* 7. Starter content — hero + specimen. Delete once real sections land.
+/* 7. Navigation
    -------------------------------------------------------------------------- */
-.hero {
-  padding-block: var(--space-9) var(--space-8);
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-block-end: var(--space-5);
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  font-size: 0.75rem;
-  font-weight: var(--fw-medium);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-.hero h1 {
-  margin-block-end: var(--space-5);
-}
-
-.lead {
-  max-width: 40rem;
-  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
-  font-weight: var(--fw-light);
-  color: var(--color-text-muted);
-}
-
-.hero__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  margin-block-start: var(--space-6);
-}
-
-.specimen {
-  display: grid;
-  gap: var(--space-7);
-  padding-block: var(--space-7);
-  border-top: 1px solid var(--color-border);
-}
-
-.section-title {
-  margin-block-end: var(--space-5);
-  font-size: 0.8125rem;
-  font-weight: var(--fw-medium);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  color: var(--color-text-faint);
-}
-
-.weights {
-  display: grid;
-}
-
-.weights__row {
-  display: grid;
-  grid-template-columns: 9rem 1fr;
-  align-items: baseline;
-  gap: var(--space-4);
-  padding-block: var(--space-3);
+.navbar {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 20;
+  /* "Glass" here is translucency + a hairline edge only. No backdrop-filter:
+     frosting the bar would blur the video behind it. */
+  background-color: rgba(7, 9, 14, 0.22);
   border-bottom: 1px solid var(--color-border);
 }
 
-.weights__label {
-  font-size: 0.8125rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--color-text-muted);
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  min-height: var(--navbar-height);
 }
 
-.weights__sample {
-  font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-  line-height: 1.2;
+.navbar__left {
+  display: flex;
+  align-items: center;
+  gap: clamp(var(--space-4), 2vw, var(--space-6));
+  min-width: 0;
+}
+
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.navbar__divider {
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: var(--fw-light);
+  user-select: none;
+}
+
+/* Brand */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.brand__logo {
+  width: 1.75rem;
+  height: 1.75rem;
+  object-fit: contain;
+}
+
+.brand__name {
+  font-size: 1.5rem;
+  font-weight: var(--fw-semibold);
   letter-spacing: var(--tracking-tight);
 }
 
-.icons {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
-  gap: var(--space-3);
-}
-
-.icons li {
+/* Nav links */
+.nav-links {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-5) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
+  gap: clamp(var(--space-5), 2.5vw, var(--space-7));
+  margin: 0;
 }
 
-.icons .lucide,
-.icons [data-lucide] {
-  font-size: 1.75rem;
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  font-weight: var(--fw-regular);
+  transition: color var(--dur-base) var(--ease-out);
+}
+
+.nav-link .lucide,
+.nav-link [data-lucide] {
+  font-size: 1.125rem;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+/* Central glowing underline, expanding outward from the middle. */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  transform: translateX(-50%);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-text);
+  box-shadow:
+    0 0 6px rgba(255, 255, 255, 0.9),
+    0 0 14px rgba(255, 255, 255, 0.55);
+  transition: width var(--dur-base) var(--ease-out);
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
   color: var(--color-text);
 }
 
-@media (max-width: 40em) {
-  .weights__row {
-    grid-template-columns: 1fr;
-    gap: var(--space-1);
-  }
+.nav-link:hover .lucide,
+.nav-link:focus-visible .lucide {
+  transform: translateY(-3px) scale(1.18);
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  width: 100%;
+}
+
+/* Pill buttons */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  padding-inline: var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-size: 0.9375rem;
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.pill:active {
+  transform: scale(0.97);
+}
+
+.pill--glass {
+  background-color: var(--color-glass);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.pill--glass:hover {
+  background-color: var(--color-glass-strong);
+}
+
+.pill--solid {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+.pill--solid:hover {
+  background-color: rgba(255, 255, 255, 0.88);
 }
 
 
-/* 8. Utilities
+/* 8. Hero
    -------------------------------------------------------------------------- */
-.fw-300 { font-weight: 300; }
-.fw-400 { font-weight: 400; }
-.fw-500 { font-weight: 500; }
-.fw-600 { font-weight: 600; }
-.fw-700 { font-weight: 700; }
-.fw-800 { font-weight: 800; }
+.hero {
+  position: relative;
+  overflow: hidden;
+}
 
-.text-muted { color: var(--color-text-muted); }
+.hero__inner {
+  position: relative;
+  z-index: 1;                       /* above the watermark */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-block: calc(var(--navbar-height) + var(--space-8)) var(--space-7);
+}
 
+.hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+  align-items: start;
+  gap: clamp(var(--space-6), 5vw, var(--space-9));
+}
+
+/* -- left column ----------------------------------------------------------- */
+
+/* Grid items default to min-width: auto, which lets long words push the track
+   wider than its minmax(0, 1fr). Belt and braces against horizontal overflow. */
+.hero__copy {
+  min-width: 0;
+}
+
+.hero__title {
+  max-width: 14ch;
+  font-size: clamp(3rem, 1rem + 7vw, 6.5rem);
+  font-weight: var(--fw-light);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.025em;
+}
+
+.hero__subtitle {
+  margin-block-start: var(--space-5);
+  max-width: 34rem;
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  font-weight: var(--fw-regular);
+  color: rgba(255, 255, 255, 0.94);
+}
+
+/* Glass email box */
+.mailbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: min(100%, 31rem);
+  margin-block-start: var(--space-7);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-glass);
+  transition: border-color var(--dur-base) var(--ease-out);
+}
+
+.mailbox:focus-within {
+  border-color: var(--color-glass-strong);
+}
+
+.mailbox__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-block: var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.mailbox__input::placeholder {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.mailbox__input:focus {
+  outline: none;               /* the wrapper shows focus via :focus-within */
+}
+
+.mailbox__submit {
+  flex-shrink: 0;
+  min-height: 3rem;
+  padding-inline: var(--space-6);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-text);
+  color: var(--color-bg);
+  font-size: 0.9375rem;
+  font-weight: var(--fw-medium);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.mailbox__submit:hover {
+  background-color: rgba(255, 255, 255, 0.88);
+}
+
+.mailbox__submit:active {
+  transform: scale(0.97);
+}
+
+/* -- right column ---------------------------------------------------------- */
+
+.hero__aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  justify-self: end;
+  width: 100%;
+  max-width: 22rem;
+}
+
+.med-card {
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);          /* 32px */
+  background-color: var(--color-light-bg);
+  color: var(--color-slate-900);
+  box-shadow: 0 24px 60px rgba(7, 9, 14, 0.28);
+}
+
+.med-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.med-card__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);          /* squircle */
+  background-color: #0b0d12;
+  color: var(--color-text);
+  font-size: 1.5rem;
+}
+
+.med-card__tag {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background-color: #f1f2f4;
+  color: var(--color-slate-900);
+  font-size: 0.8125rem;
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.med-card__title {
+  margin-block-start: var(--space-5);
+  font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.75rem);
+  font-weight: var(--fw-regular);
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+}
+
+.med-card__soft {
+  color: #9aa1ab;
+}
+
+.med-card__cta {
+  width: 100%;
+  min-height: 3.5rem;
+  margin-block-start: var(--space-5);
+  border-radius: var(--radius-md);
+  background-color: var(--color-control);
+  color: var(--color-slate-900);
+  font-size: 1rem;
+  font-weight: var(--fw-medium);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.med-card__cta:hover {
+  background-color: var(--color-control-hover);
+}
+
+.med-card__cta:active {
+  transform: scale(0.99);
+}
+
+/* Slider progress track under the card */
+.slider {
+  height: 3px;
+  border-radius: var(--radius-pill);
+  background-color: rgba(255, 255, 255, 0.30);
+}
+
+.slider__fill {
+  display: block;
+  width: 22%;
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--color-text);
+}
+
+/* -- bottom left ----------------------------------------------------------- */
+
+.hero__foot {
+  margin-block-start: var(--space-8);
+  padding-block-start: var(--space-7);
+}
+
+.hero__glyph {
+  width: 4.5rem;
+  height: 4.5rem;
+  object-fit: contain;
+}
+
+.hero__note {
+  margin-block-start: var(--space-5);
+  max-width: 24rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+}
+
+/* -- watermark ------------------------------------------------------------- */
+
+.hero__watermark {
+  position: absolute;
+  left: 50%;
+  bottom: -0.16em;
+  z-index: 0;                       /* above the video, below .hero__inner */
+  transform: translateX(-50%);
+  font-size: clamp(5rem, 20vw, 19rem);
+  font-weight: var(--fw-medium);
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.20);
+  user-select: none;
+  pointer-events: none;
+}
+
+
+/* 9. Background control
+   Floating, icon-only, bottom-right — deliberately outside the navbar so the
+   navigation matches the design while the looping video still has a control.
+   -------------------------------------------------------------------------- */
+.video-toggle {
+  position: fixed;
+  right: clamp(1rem, 2.5vw, 2rem);
+  bottom: clamp(1rem, 2.5vw, 2rem);
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background-color: rgba(7, 9, 14, 0.55);
+  color: var(--color-text);
+  font-size: 1rem;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.video-toggle:hover {
+  background-color: rgba(7, 9, 14, 0.78);
+}
+
+.video-toggle:active {
+  transform: scale(0.94);
+}
+
+
+/* 10. Utilities
+   -------------------------------------------------------------------------- */
 .visually-hidden {
   position: absolute !important;
   width: 1px;
@@ -559,7 +754,7 @@ samp {
 }
 
 
-/* 9. Accessibility & motion preferences
+/* 11. Accessibility & motion preferences
    -------------------------------------------------------------------------- */
 :focus-visible {
   outline: 2px solid var(--color-text);
@@ -580,5 +775,67 @@ samp {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+
+/* 12. Responsive
+   -------------------------------------------------------------------------- */
+
+/* Tablet — card drops under the copy */
+@media (max-width: 64em) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero__aside {
+    justify-self: start;
+  }
+
+  .hero__foot {
+    margin-block-start: var(--space-7);
+  }
+}
+
+/* Small tablet / large phone — the Menu button stands in for the nav links */
+@media (max-width: 52em) {
+  .navbar__nav,
+  .navbar__divider {
+    display: none;
+  }
+
+  .hero__watermark {
+    font-size: clamp(4rem, 26vw, 10rem);
+  }
+}
+
+/* Phone */
+@media (max-width: 36em) {
+  :root {
+    --navbar-height: 4.5rem;
+  }
+
+  .pill--solid span {
+    display: none;              /* icon-only Subscribe to keep the bar on one line */
+  }
+
+  .pill--solid {
+    padding-inline: var(--space-4);
+  }
+
+  .mailbox {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+  }
+
+  .mailbox__input {
+    padding-inline: var(--space-3);
+  }
+
+  .hero__aside {
+    max-width: none;
   }
 }

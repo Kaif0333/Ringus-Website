@@ -38,105 +38,135 @@
 
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="site-header">
-    <div class="container site-header__inner">
-      <a class="brand" href="#" aria-label="Ringus — home">
-        <i data-lucide="heart-pulse" aria-hidden="true"></i>
-        <span class="brand__name">Ringus</span>
-      </a>
-      <div class="site-header__actions">
-        <span class="site-header__tag">Foundation</span>
-        <!-- WCAG 2.2.2 (Pause, Stop, Hide): the background loops forever, so
-             it needs a control. Lives outside the aria-hidden stage. Each icon
-             is wrapped so `hidden` survives Lucide replacing the <i>. -->
-        <button type="button" class="btn btn--ghost btn--sm video-toggle" data-video-toggle>
-          <span data-toggle-icon="pause"><i data-lucide="pause" aria-hidden="true"></i></span>
-          <span data-toggle-icon="play" hidden><i data-lucide="play" aria-hidden="true"></i></span>
-          <span data-toggle-label>Pause background</span>
+  <!-- ==================================================================
+       Navigation
+       ================================================================== -->
+  <header class="navbar">
+    <div class="container navbar__inner">
+
+      <div class="navbar__left">
+        <a class="brand" href="#" aria-label="Ringus — home">
+          <img class="brand__logo" src="assets/logo.png" alt="" width="24" height="24">
+          <span class="brand__name">Ringus</span>
+        </a>
+
+        <span class="navbar__divider" aria-hidden="true">|</span>
+
+        <nav class="navbar__nav" aria-label="Primary">
+          <ul class="nav-links" role="list">
+            <li>
+              <a class="nav-link" href="#">
+                <i data-lucide="home" aria-hidden="true"></i>
+                <span>home</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" href="#">
+                <i data-lucide="shopping-bag" aria-hidden="true"></i>
+                <span>store</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" href="#">
+                <i data-lucide="user" aria-hidden="true"></i>
+                <span>membership</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="navbar__right">
+        <button type="button" class="pill pill--glass">
+          <i data-lucide="menu" aria-hidden="true"></i>
+          <span>Menu</span>
+        </button>
+        <button type="button" class="pill pill--solid">
+          <i data-lucide="user" aria-hidden="true"></i>
+          <span>Subscribe</span>
         </button>
       </div>
+
     </div>
   </header>
 
-  <main id="main" class="container" tabindex="-1">
-
-    <!--
-      Starter content below exists only to prove the font and icons are wired up.
-      Replace it with the real sections as the site is built out.
-    -->
+  <!-- ==================================================================
+       Hero
+       ================================================================== -->
+  <main id="main" tabindex="-1">
     <section class="hero">
-      <p class="eyebrow">
-        <i data-lucide="sparkles" aria-hidden="true"></i>
-        Template ready
-      </p>
-      <h1>Wear the next generation</h1>
-      <p class="lead">
-        Host Grotesk is loaded from Google Fonts and Lucide icons render as inline SVG.
-        Everything on this page is set in a single typeface — start building from here.
-      </p>
-      <div class="hero__actions">
-        <button type="button" class="btn btn--primary">
-          <i data-lucide="user" aria-hidden="true"></i>
-          Subscribe
-        </button>
-        <button type="button" class="btn btn--ghost">
-          <i data-lucide="menu" aria-hidden="true"></i>
-          Menu
-        </button>
+      <div class="container hero__inner">
+
+        <div class="hero__grid">
+
+          <!-- Left column -->
+          <div class="hero__copy">
+            <h1 class="hero__title">Wear the next generation</h1>
+            <p class="hero__subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed.</p>
+
+            <form class="mailbox" action="#" method="post" novalidate>
+              <label class="visually-hidden" for="hero-email">Email address</label>
+              <input class="mailbox__input"
+                     id="hero-email"
+                     type="email"
+                     name="email"
+                     placeholder="Your mail ID required"
+                     autocomplete="email"
+                     required>
+              <button class="mailbox__submit" type="submit">Subscribe</button>
+            </form>
+          </div>
+
+          <!-- Right column -->
+          <div class="hero__aside">
+            <article class="med-card">
+              <div class="med-card__head">
+                <span class="med-card__badge" aria-hidden="true">
+                  <i data-lucide="heart-pulse"></i>
+                </span>
+                <span class="med-card__tag">Accurate &amp; Precise</span>
+              </div>
+
+              <h2 class="med-card__title">
+                Not only a <span class="med-card__soft">ring</span>, but a
+                <span class="med-card__soft">medical device</span> on your finger.
+              </h2>
+
+              <button type="button" class="med-card__cta">More info</button>
+            </article>
+
+            <div class="slider" aria-hidden="true">
+              <span class="slider__fill"></span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bottom left -->
+        <div class="hero__foot">
+          <img class="hero__glyph" src="assets/lorem%20paragph.png" alt="" width="114" height="114">
+          <p class="hero__note">
+            Lorem ipsum dolor sit amet,<br>
+            consectetur adipiscing elit, sed do<br>
+            eiusmod tempor incididunt ut<br>
+            labore et dolore magna aliqua.
+          </p>
+        </div>
+
       </div>
+
+      <p class="hero__watermark" aria-hidden="true">Ringus</p>
     </section>
-
-    <section class="specimen" aria-label="Font and icon specimen">
-      <div>
-        <h2 id="specimen-type" class="section-title">Host Grotesk · 300 – 800</h2>
-        <ul class="weights" role="list">
-          <li class="weights__row">
-            <span class="weights__label">300 · Light</span>
-            <span class="weights__sample fw-300">Wear the next generation</span>
-          </li>
-          <li class="weights__row">
-            <span class="weights__label">400 · Regular</span>
-            <span class="weights__sample fw-400">Wear the next generation</span>
-          </li>
-          <li class="weights__row">
-            <span class="weights__label">500 · Medium</span>
-            <span class="weights__sample fw-500">Wear the next generation</span>
-          </li>
-          <li class="weights__row">
-            <span class="weights__label">600 · Semibold</span>
-            <span class="weights__sample fw-600">Wear the next generation</span>
-          </li>
-          <li class="weights__row">
-            <span class="weights__label">700 · Bold</span>
-            <span class="weights__sample fw-700">Wear the next generation</span>
-          </li>
-          <li class="weights__row">
-            <span class="weights__label">800 · Extrabold</span>
-            <span class="weights__sample fw-800">Wear the next generation</span>
-          </li>
-        </ul>
-      </div>
-
-      <div>
-        <h2 id="specimen-icons" class="section-title">Lucide icons</h2>
-        <ul class="icons" role="list" aria-labelledby="specimen-icons">
-          <li><i data-lucide="home" aria-hidden="true"></i><span>home</span></li>
-          <li><i data-lucide="shopping-bag" aria-hidden="true"></i><span>shopping-bag</span></li>
-          <li><i data-lucide="user" aria-hidden="true"></i><span>user</span></li>
-          <li><i data-lucide="menu" aria-hidden="true"></i><span>menu</span></li>
-          <li><i data-lucide="heart-pulse" aria-hidden="true"></i><span>heart-pulse</span></li>
-          <li><i data-lucide="arrow-right" aria-hidden="true"></i><span>arrow-right</span></li>
-        </ul>
-      </div>
-    </section>
-
   </main>
 
-  <footer class="site-footer">
-    <div class="container site-footer__inner">
-      <p>&copy; <span data-year>2026</span> Ringus. All rights reserved.</p>
-      <p class="site-footer__meta">Host Grotesk &middot; Lucide Icons</p>
-    </div>
-  </footer>
+  <!-- WCAG 2.2.2 (Pause, Stop, Hide): the background loops forever, so it needs
+       a control. Kept out of the navbar so the nav matches the design, and out
+       of the aria-hidden video stage so it stays focusable. Each icon is
+       wrapped in a span so `hidden` survives Lucide replacing the <i>. -->
+  <button type="button" class="video-toggle" data-video-toggle>
+    <span data-toggle-icon="pause"><i data-lucide="pause" aria-hidden="true"></i></span>
+    <span data-toggle-icon="play" hidden><i data-lucide="play" aria-hidden="true"></i></span>
+    <span class="visually-hidden" data-toggle-label>Pause background</span>
+  </button>
 </body>
 </html>

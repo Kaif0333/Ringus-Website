@@ -4,13 +4,19 @@
   "trailingSlash": false,
   "headers": [
     {
-      "source": "/assets/(.*)\.(js|css|woff2)",
+      "source": "/assets/:path*.js",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "/assets/(.*)\.(mp4|jpg|jpeg|png|webp|svg)",
+      "source": "/assets/:path*.css",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/assets/:path*.(mp4|jpg|jpeg|png|webp|svg)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }
       ]

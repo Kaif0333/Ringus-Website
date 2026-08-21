@@ -79,6 +79,69 @@
   }
 
 
+  /* 3b. Scroll reveals — Section 2
+     ----------------------------------------------------------------------
+     Watches every `.reveal-element` inside the benefits section and adds
+     `.is-visible` once it is 80px inside the viewport, which slides it up,
+     fades it in, and expands `.footer-progress-fill` from 0% to 32%.
+
+     The hidden from-state lives behind `.reveals-on`, a class this function
+     adds ONLY after it has confirmed an IntersectionObserver and is about
+     to observe. So if JS is blocked, the observer is unsupported, or the
+     visitor asked for reduced motion, nothing is ever hidden and Section 2
+     reads normally. Everything here is below the fold, so arming the class
+     after parse is not visible to the reader.
+     ---------------------------------------------------------------------- */
+
+  const REVEAL_MARGIN = '-80px';
+
+  function initReveals() {
+    const els = document.querySelectorAll('.benefits-section .reveal-element');
+    if (!els.length) return;
+
+    const show = function (el) { el.classList.add('is-visible'); };
+
+    if (!('IntersectionObserver' in window) ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      els.forEach(show);      // reveal outright; never arm the hiding CSS
+      return;
+    }
+
+    root.classList.add('reveals-on');
+
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        show(entry.target);
+        observer.unobserve(entry.target);   // one-shot: scrolling back up won't re-hide
+      });
+    }, { rootMargin: REVEAL_MARGIN, threshold: 0 });
+
+    els.forEach(function (el) { observer.observe(el); });
+
+    // Backstop. An element lying within 80px of the document end can never
+    // satisfy the -80px bottom gate, no matter how far the reader scrolls —
+    // it needs its own height plus the space beneath it to exceed the margin.
+    // Layout is spaced to avoid that, but a future edit could reintroduce it,
+    // and silently unrevealed content is the worst outcome here. So when the
+    // page bottoms out, reveal whatever is still waiting.
+    const sweepTail = function () {
+      const atEnd = window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2;
+      if (!atEnd) return;
+
+      els.forEach(function (el) {
+        if (el.classList.contains('is-visible')) return;
+        show(el);
+        observer.unobserve(el);
+      });
+      window.removeEventListener('scroll', sweepTail);
+    };
+
+    window.addEventListener('scroll', sweepTail, { passive: true });
+  }
+
+
   /* 4. Hero video — hybrid canvas-assisted ping-pong loop
      ----------------------------------------------------------------------
      Forward  : the <video> plays natively. On every animation frame the
@@ -602,6 +665,7 @@
   function init() {
     initIcons();
     initYear();
+    initReveals();
     initHeroVideo();
   }
 

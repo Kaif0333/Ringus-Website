@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#07090e">
+  <meta name="description" content="Ringus — the next-generation digital medical ring.">
+  <title>Ringus</title>
+
+  <!-- Google Fonts: Host Grotesk — variable font, weights 300–800, upright + italic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap">
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Lucide Icons (UMD build → window.lucide). Version is pinned on purpose; bump it deliberately. -->
+  <script src="https://unpkg.com/lucide@1.33.0/dist/umd/lucide.min.js" defer></script>
+  <!-- Site script — `defer` keeps it running after Lucide, before DOMContentLoaded -->
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="#" aria-label="Ringus — home">
+        <i data-lucide="heart-pulse" aria-hidden="true"></i>
+        <span class="brand__name">Ringus</span>
+      </a>
+      <span class="site-header__tag">Foundation</span>
+    </div>
+  </header>
+
+  <main id="main" class="container" tabindex="-1">
+
+    <!--
+      Starter content below exists only to prove the font and icons are wired up.
+      Replace it with the real sections as the site is built out.
+    -->
+    <section class="hero">
+      <p class="eyebrow">
+        <i data-lucide="sparkles" aria-hidden="true"></i>
+        Template ready
+      </p>
+      <h1>Wear the next generation</h1>
+      <p class="lead">
+        Host Grotesk is loaded from Google Fonts and Lucide icons render as inline SVG.
+        Everything on this page is set in a single typeface — start building from here.
+      </p>
+      <div class="hero__actions">
+        <button type="button" class="btn btn--primary">
+          <i data-lucide="user" aria-hidden="true"></i>
+          Subscribe
+        </button>
+        <button type="button" class="btn btn--ghost">
+          <i data-lucide="menu" aria-hidden="true"></i>
+          Menu
+        </button>
+      </div>
+    </section>
+
+    <section class="specimen" aria-label="Font and icon specimen">
+      <div>
+        <h2 id="specimen-type" class="section-title">Host Grotesk · 300 – 800</h2>
+        <ul class="weights" role="list">
+          <li class="weights__row">
+            <span class="weights__label">300 · Light</span>
+            <span class="weights__sample fw-300">Wear the next generation</span>
+          </li>
+          <li class="weights__row">
+            <span class="weights__label">400 · Regular</span>
+            <span class="weights__sample fw-400">Wear the next generation</span>
+          </li>
+          <li class="weights__row">
+            <span class="weights__label">500 · Medium</span>
+            <span class="weights__sample fw-500">Wear the next generation</span>
+          </li>
+          <li class="weights__row">
+            <span class="weights__label">600 · Semibold</span>
+            <span class="weights__sample fw-600">Wear the next generation</span>
+          </li>
+          <li class="weights__row">
+            <span class="weights__label">700 · Bold</span>
+            <span class="weights__sample fw-700">Wear the next generation</span>
+          </li>
+          <li class="weights__row">
+            <span class="weights__label">800 · Extrabold</span>
+            <span class="weights__sample fw-800">Wear the next generation</span>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 id="specimen-icons" class="section-title">Lucide icons</h2>
+        <ul class="icons" role="list" aria-labelledby="specimen-icons">
+          <li><i data-lucide="home" aria-hidden="true"></i><span>home</span></li>
+          <li><i data-lucide="shopping-bag" aria-hidden="true"></i><span>shopping-bag</span></li>
+          <li><i data-lucide="user" aria-hidden="true"></i><span>user</span></li>
+          <li><i data-lucide="menu" aria-hidden="true"></i><span>menu</span></li>
+          <li><i data-lucide="heart-pulse" aria-hidden="true"></i><span>heart-pulse</span></li>
+          <li><i data-lucide="arrow-right" aria-hidden="true"></i><span>arrow-right</span></li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p>&copy; <span data-year>2026</span> Ringus. All rights reserved.</p>
+      <p class="site-footer__meta">Host Grotesk &middot; Lucide Icons</p>
+    </div>
+  </footer>
+</body>
+</html>

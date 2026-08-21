@@ -624,8 +624,11 @@ samp {
   letter-spacing: -0.015em;
 }
 
+/* slate-500 rather than a lighter grey: this title shrinks to 22px on small
+   screens, below WCAG's large-text threshold, so it needs the full 4.5:1.
+   Measured 4.76:1 on white. */
 .med-card__soft {
-  color: #9aa1ab;
+  color: var(--color-slate-500);
 }
 
 .med-card__cta {
@@ -703,6 +706,241 @@ samp {
   color: rgba(255, 255, 255, 0.20);
   user-select: none;
   pointer-events: none;
+}
+
+
+/* 8a. Section 2 — Benefits
+   ----------------------------------------------------------------------
+   The first light surface on the page. It sits in normal flow with an
+   opaque background, so it paints over the fixed z-index:-1 video stage;
+   `position: relative` states that intent rather than relying on it.
+   Everything inside flips to the slate palette, including the two
+   inherited-from-dark behaviours that would otherwise break here:
+   ::selection and the :focus-visible ring.
+   -------------------------------------------------------------------------- */
+.benefits-section {
+  position: relative;
+  z-index: 1;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;   /* 40px top corners */
+  background-color: var(--color-light-bg);
+  color: var(--color-slate-900);
+}
+
+.benefits-section__inner {
+  padding-block: clamp(var(--space-7), 6vw, var(--space-9)) var(--space-8);
+}
+
+/* White-on-white would make both invisible on this surface. */
+.benefits-section ::selection {
+  background-color: var(--color-slate-900);
+  color: var(--color-light-bg);
+}
+
+.benefits-section :focus-visible {
+  outline-color: var(--color-slate-900);
+}
+
+/* -- top-left header ------------------------------------------------------- */
+
+.benefits-tag {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-slate-500);
+}
+
+.benefits-tag .lucide,
+.benefits-tag [data-lucide] {
+  font-size: 1.125rem;
+  color: var(--color-slate-900);
+}
+
+/* -- main copy ------------------------------------------------------------- */
+
+.benefits-copy {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(var(--space-6), 5vw, var(--space-8));
+  margin-block-start: var(--space-6);
+}
+
+.benefits-copy__headline {
+  min-width: 0;
+  font-size: clamp(1.875rem, 1rem + 2.9vw, 3.5rem);
+  font-weight: var(--fw-regular);
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.benefits-copy__muted {
+  color: var(--color-slate-500);
+}
+
+.benefits-copy__aside {
+  min-width: 0;
+}
+
+.benefits-copy__subtext {
+  max-width: 34rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-slate-500);
+}
+
+.benefits-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-block-start: var(--space-5);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-6);
+  border-radius: var(--radius-pill);
+  background-color: #0b0d12;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: var(--fw-medium);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.benefits-cta:hover {
+  background-color: #1a1d25;
+}
+
+.benefits-cta:active {
+  transform: scale(0.98);
+}
+
+.benefits-cta__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: var(--color-light-bg);
+  color: #0b0d12;
+  font-size: 1.125rem;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.benefits-cta:hover .benefits-cta__arrow {
+  transform: translateX(3px);
+}
+
+/* -- cards grid ------------------------------------------------------------ */
+
+.benefit-cards {
+  display: grid;
+  /* Card 2 is the wide one — it gets the larger track. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.62fr);
+  gap: var(--space-5);
+  margin-block-start: clamp(var(--space-7), 5vw, var(--space-8));
+}
+
+.benefit-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-light-surface);
+}
+
+/* `height: auto` is load-bearing. The width/height attributes on the <img>
+   (kept, so the box is reserved before the file arrives) apply as
+   presentational hints, and a hinted `height: 883px` would beat the
+   aspect-ratio here and render the image nearly twice as tall as intended. */
+.benefit-card__media {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* The wide card shows its 16:9 source essentially uncropped, and that sets the
+   row height. The narrow card is stretched to match by the grid, so its image
+   absorbs the leftover instead of leaving a gap above the text — which keeps
+   both cards' stat lines on the same baseline at any column ratio. Cropping
+   the narrow image horizontally is safe: the ring is centred on plain slate. */
+.benefit-card--wide .benefit-card__media {
+  aspect-ratio: 16 / 9;
+}
+
+.benefit-card:not(.benefit-card--wide) .benefit-card__media {
+  flex: 1 1 auto;
+  min-height: 12rem;
+}
+
+.benefit-card__body {
+  padding: var(--space-5);
+}
+
+.benefit-card__stat {
+  font-size: clamp(2rem, 1.2rem + 2.4vw, 3rem);
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.benefit-card__label {
+  margin-block-start: var(--space-2);
+  font-size: 0.8125rem;
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-slate-500);
+}
+
+.benefit-card__desc {
+  margin-block-start: var(--space-4);
+  max-width: 38rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-slate-500);
+}
+
+/* -- footer track ---------------------------------------------------------- */
+
+.footer-track {
+  margin-block-start: clamp(var(--space-7), 5vw, var(--space-8));
+}
+
+.footer-track__nums {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-slate-500);
+}
+
+.footer-progress {
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background-color: #e4e7ec;
+}
+
+/* Prompt 7 animates this from 0% to 32% on scroll; 32% is the resting state. */
+.footer-progress-fill {
+  display: block;
+  width: 32%;
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--color-slate-900);
 }
 
 
@@ -912,6 +1150,20 @@ samp {
   .hero__foot {
     margin-block-start: var(--space-7);
   }
+
+  .benefits-copy {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .benefit-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Stacked, both cards get the same crop so the column reads evenly. */
+  .benefit-card--wide .benefit-card__media {
+    aspect-ratio: 2 / 1;
+  }
 }
 
 /* Small tablet / large phone — the Menu button stands in for the nav links */
@@ -954,5 +1206,20 @@ samp {
 
   .hero__aside {
     max-width: none;
+  }
+
+  .benefits-section {
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+
+  /* 7 numbers cannot sit on one phone-width row without colliding. */
+  .footer-track__nums {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: var(--space-4);
+  }
+
+  .benefit-card--wide .benefit-card__media {
+    aspect-ratio: 4 / 3;
   }
 }

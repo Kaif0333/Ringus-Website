@@ -165,6 +165,85 @@
 
       <p class="hero__watermark" aria-hidden="true">Ringus</p>
     </section>
+
+    <!-- ==================================================================
+         Section 2 — Benefits
+         `.reveal-element` marks the blocks the Prompt 7 IntersectionObserver
+         will animate. They are inert until then: nothing here is hidden by
+         CSS, so the section reads correctly with the observer absent.
+         ================================================================== -->
+    <section class="benefits-section" aria-labelledby="benefits-title">
+      <div class="container benefits-section__inner">
+
+        <p class="benefits-tag reveal-element">
+          <i data-lucide="asterisk" aria-hidden="true"></i>
+          The benefits of digital medical ring
+        </p>
+
+        <div class="benefits-copy">
+          <h2 class="benefits-copy__headline reveal-element" id="benefits-title">
+            Choose Ringus to monitor vital parameters
+            <span class="benefits-copy__muted">and gain health clarity.</span>
+          </h2>
+
+          <div class="benefits-copy__aside reveal-element">
+            <p class="benefits-copy__subtext">
+              Ringus reads heart rate, blood oxygen, skin temperature and movement around
+              the clock, then turns the raw signal into something you can act on — no
+              screen, no strap, and no daily charge to remember.
+            </p>
+            <a class="benefits-cta" href="#">
+              Get in touch
+              <span class="benefits-cta__arrow" aria-hidden="true">
+                <i data-lucide="arrow-right"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <ul class="benefit-cards" role="list">
+          <li class="benefit-card reveal-element">
+            <img class="benefit-card__media"
+                 src="assets/card_ring_metrics.jpg"
+                 alt="The Ringus ring resting on slate, its inner sensor array lit green."
+                 width="1200" height="883" loading="lazy" decoding="async">
+            <div class="benefit-card__body">
+              <p class="benefit-card__stat">99.4%</p>
+              <p class="benefit-card__label">Clinical accuracy</p>
+              <p class="benefit-card__desc">
+                Validated against medical-grade reference devices for heart rate, blood
+                oxygen and skin temperature.
+              </p>
+            </div>
+          </li>
+
+          <li class="benefit-card benefit-card--wide reveal-element">
+            <img class="benefit-card__media"
+                 src="assets/card_ring_lifestyle.jpg"
+                 alt="A hiker on a mountain ridge at sunset, overlaid with live readings from the ring: oxygen saturation, heart rate and elevation."
+                 width="1376" height="769" loading="lazy" decoding="async">
+            <div class="benefit-card__body">
+              <p class="benefit-card__stat">7-Day</p>
+              <p class="benefit-card__label">Battery life</p>
+              <p class="benefit-card__desc">
+                A full week of continuous monitoring on a single charge, so the record
+                never has gaps in it.
+              </p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="footer-track reveal-element">
+          <ol class="footer-track__nums" role="list">
+            <li>02</li><li>03</li><li>04</li><li>05</li><li>06</li><li>07</li><li>08</li>
+          </ol>
+          <div class="footer-progress" aria-hidden="true">
+            <span class="footer-progress-fill"></span>
+          </div>
+        </div>
+
+      </div>
+    </section>
   </main>
 
   <!-- WCAG 2.2.2 (Pause, Stop, Hide): the background loops forever, so it needs

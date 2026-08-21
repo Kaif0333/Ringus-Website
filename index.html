@@ -22,6 +22,20 @@
   <script src="script.js" defer></script>
 </head>
 <body>
+  <!-- Full-screen background video (assets/hero bg.mp4).
+       `loop` is the no-JS / unsupported-browser fallback; script.js removes it
+       and drives a canvas-assisted ping-pong loop instead. The canvas is only
+       shown while cached frames play in reverse. -->
+  <div class="hero-video" data-hero-video aria-hidden="true">
+    <video class="hero-video__media"
+           src="assets/hero%20bg.mp4"
+           autoplay muted loop playsinline
+           preload="auto"
+           disablepictureinpicture disableremoteplayback></video>
+    <canvas class="hero-video__canvas" hidden></canvas>
+    <div class="hero-video__overlay"></div>
+  </div>
+
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header">
@@ -30,7 +44,17 @@
         <i data-lucide="heart-pulse" aria-hidden="true"></i>
         <span class="brand__name">Ringus</span>
       </a>
-      <span class="site-header__tag">Foundation</span>
+      <div class="site-header__actions">
+        <span class="site-header__tag">Foundation</span>
+        <!-- WCAG 2.2.2 (Pause, Stop, Hide): the background loops forever, so
+             it needs a control. Lives outside the aria-hidden stage. Each icon
+             is wrapped so `hidden` survives Lucide replacing the <i>. -->
+        <button type="button" class="btn btn--ghost btn--sm video-toggle" data-video-toggle>
+          <span data-toggle-icon="pause"><i data-lucide="pause" aria-hidden="true"></i></span>
+          <span data-toggle-icon="play" hidden><i data-lucide="play" aria-hidden="true"></i></span>
+          <span data-toggle-label>Pause background</span>
+        </button>
+      </div>
     </div>
   </header>
 

@@ -101,7 +101,15 @@
 
           <!-- Left column -->
           <div class="hero__copy">
-            <h1 class="hero__title">Wear the next generation</h1>
+            <!-- Split into per-word masks for the entrance reveal. The words are
+                 real text separated by whitespace, so the accessible name is still
+                 "Wear the next generation". -->
+            <h1 class="hero__title">
+              <span class="word-mask"><span class="word-reveal">Wear</span></span>
+              <span class="word-mask"><span class="word-reveal">the</span></span>
+              <span class="word-mask"><span class="word-reveal">next</span></span>
+              <span class="word-mask"><span class="word-reveal">generation</span></span>
+            </h1>
             <p class="hero__subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed.</p>
 
             <form class="mailbox" action="#" method="post" novalidate>

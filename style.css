@@ -690,10 +690,11 @@ samp {
 
 .hero__watermark {
   position: absolute;
-  left: 50%;
+  inset-inline: 0;
   bottom: -0.16em;
   z-index: 0;                       /* above the video, below .hero__inner */
-  transform: translateX(-50%);
+  text-align: center;               /* centred without a transform, so the
+                                       entrance keyframe owns `transform` */
   font-size: clamp(5rem, 20vw, 19rem);
   font-weight: var(--fw-medium);
   line-height: 0.8;
@@ -702,6 +703,100 @@ samp {
   color: rgba(255, 255, 255, 0.20);
   user-select: none;
   pointer-events: none;
+}
+
+
+/* 8b. Entrance animations (page load)
+   ----------------------------------------------------------------------
+   Every entrance uses `animation-fill-mode: both`, and NO element is given
+   `opacity: 0` in its base rule. That matters: if animations never run —
+   reduced motion, a very old browser, or CSS that fails to apply — the
+   hero still renders in its natural, final state instead of staying blank.
+   Only `transform` and `opacity` are animated, so this stays on the
+   compositor and never triggers layout.
+   -------------------------------------------------------------------------- */
+
+@keyframes heroFadeDown {
+  from { opacity: 0; transform: translateY(-1.5rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(1.75rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroPopCard {
+  from { opacity: 0; transform: translateY(1.25rem) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* The mask hides the word entirely, so this needs no fade — just the slide. */
+@keyframes wordReveal {
+  from { transform: translateY(125%); }
+  to   { transform: translateY(0); }
+}
+
+/* -- word masks ------------------------------------------------------------ */
+
+/* The mask clips at its padding box. The padding/negative-margin pair buys
+   room for descenders (the "g" in "generation") without changing layout, and
+   the 125% travel in `wordReveal` clears that padding strip so no sliver of
+   the word peeks out before its turn. */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+  vertical-align: bottom;
+}
+
+.word-reveal {
+  display: inline-block;
+  animation: wordReveal 0.95s var(--ease-out) both;
+}
+
+/* Title starts at 0.25s; each word follows 0.09s later. Room for 8 words so
+   the sequence survives an edit to the headline. */
+.word-mask:nth-child(1) .word-reveal { animation-delay: 0.25s; }
+.word-mask:nth-child(2) .word-reveal { animation-delay: 0.34s; }
+.word-mask:nth-child(3) .word-reveal { animation-delay: 0.43s; }
+.word-mask:nth-child(4) .word-reveal { animation-delay: 0.52s; }
+.word-mask:nth-child(5) .word-reveal { animation-delay: 0.61s; }
+.word-mask:nth-child(6) .word-reveal { animation-delay: 0.70s; }
+.word-mask:nth-child(7) .word-reveal { animation-delay: 0.79s; }
+.word-mask:nth-child(8) .word-reveal { animation-delay: 0.88s; }
+
+/* -- staggered sequence ---------------------------------------------------- */
+
+.navbar {
+  animation: heroFadeDown 0.8s var(--ease-out) 0.1s both;
+}
+
+.med-card {
+  animation: heroPopCard 0.85s var(--ease-out) 0.4s both;
+}
+
+.hero__subtitle {
+  animation: heroFadeUp 0.8s var(--ease-out) 0.45s both;
+}
+
+.mailbox {
+  animation: heroFadeUp 0.8s var(--ease-out) 0.65s both;
+}
+
+.slider {
+  animation: heroFadeUp 0.8s var(--ease-out) 0.75s both;
+}
+
+/* Not in the brief's list, but it is the only block left in the hero — without
+   this it would sit there fully drawn while everything around it animates in. */
+.hero__foot {
+  animation: heroFadeUp 0.8s var(--ease-out) 0.85s both;
+}
+
+.hero__watermark {
+  animation: heroFadeUp 1.15s var(--ease-out) 1s both;
 }
 
 
@@ -773,8 +868,30 @@ samp {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    /* Zeroing the delay matters as much as the duration: the entrance
+       sequence runs up to 1 s of delay, and with `fill-mode: both` an
+       un-zeroed delay would hold the hero on its hidden from-state for a
+       full second before snapping in. */
+    animation-delay: 0s !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Drop the entrance animations outright rather than merely shortening them.
+     A near-zero duration still leaves an animation attached, so the hero's
+     appearance depends on the document timeline starting to advance — and
+     that can lag while the page is still loading the background video. With
+     `animation: none` there is no from-state at all: the base styles are the
+     final styles, so the hero is complete on the very first painted frame. */
+  .navbar,
+  .med-card,
+  .hero__subtitle,
+  .mailbox,
+  .slider,
+  .hero__foot,
+  .hero__watermark,
+  .word-reveal {
+    animation: none !important;
   }
 }
 

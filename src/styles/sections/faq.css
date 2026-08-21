@@ -1,0 +1,92 @@
+/* ==========================================================================
+   08 · FAQ
+   Two columns on laptops and up: the section head sits (and sticks) on the
+   left, the accordion takes the wider right column. The .acc primitives are
+   styled in components.css; this file only places and sizes them and adds a
+   JS-gated fade on the answer body.
+   ========================================================================== */
+
+.faq__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: start;
+  gap: var(--s-9);
+}
+
+.faq__head {
+  position: sticky;
+  top: calc(var(--nav-h) + var(--s-5));
+  align-self: start;
+  max-width: 22rem;
+  margin-block-end: 0;
+}
+
+.faq__list {
+  min-width: 0;
+}
+
+/* -- answer fade -----------------------------------------------------------
+   The panel itself opens via the shared grid-rows transition. A beat after it
+   starts, the copy fades in. Both the hidden from-state and the transition
+   live behind `.is-ready`, which the script adds only when motion is allowed,
+   so without JS (or under reduced motion) every answer is simply visible. */
+
+.faq__list.is-ready .acc__body {
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+
+.faq__list.is-ready .acc__panel[data-open="true"] .acc__body {
+  opacity: 1;
+  transition: opacity var(--dur-2) var(--ease-out) var(--dur-1);
+}
+
+/* -- no JS -----------------------------------------------------------------
+   Every answer readable without script. */
+
+html.no-js .acc__panel {
+  grid-template-rows: 1fr;
+}
+
+/* -- responsive ------------------------------------------------------------ */
+
+/* Short laptops (1366x768, 1280x720): six closed rows plus one open answer
+   must share ~560px. 16px row padding gives 65px rows -> 390px, leaving
+   ~150px for the longest answer. The headline steps down to the ~40px the
+   neighbouring slides use so it holds two lines in its 22rem column. */
+@media (min-width: 64em) and (max-height: 50em) {
+  .faq__head h2 {
+    font-size: clamp(1.75rem, 1rem + 2vw, 2.5rem);
+  }
+
+  .faq .acc__trigger {
+    padding-block: var(--s-4);
+  }
+
+  .faq .acc__body {
+    padding-block-end: var(--s-4);
+  }
+}
+
+@media (max-width: 64em) {
+  .faq__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-7);
+  }
+
+  .faq__head {
+    position: static;
+    max-width: 36rem;
+  }
+}
+
+@media (max-width: 36em) {
+  .faq__inner {
+    gap: var(--s-6);
+  }
+
+  .faq .acc__trigger {
+    padding-block: var(--s-4);
+    font-size: var(--fs-base);
+  }
+}

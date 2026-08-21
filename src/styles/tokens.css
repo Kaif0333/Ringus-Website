@@ -1,0 +1,153 @@
+/* ==========================================================================
+   Ringus — design tokens
+   Semantic tokens only. Components never reference raw colours; sections
+   that flip to the light surface set `.theme-light`, which remaps the same
+   semantic names, so every component adapts without extra rules.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* -- type ---------------------------------------------------------------- */
+  --font-sans: "Host Grotesk", system-ui, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+
+  --fs-2xs: 0.6875rem;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-xl: clamp(1.625rem, 1.25rem + 1.4vw, 2.25rem);
+  --fs-2xl: clamp(2.125rem, 1.3rem + 2.9vw, 3.5rem);
+  --fs-3xl: clamp(2.5rem, 1.2rem + 4.2vw, 4.75rem);
+  --fs-display: clamp(2.75rem, 1rem + 5.4vw, 6rem);
+
+  --lh-tight: 1.02;
+  --lh-snug: 1.15;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.65;
+
+  --ls-tight: -0.03em;
+  --ls-snug: -0.015em;
+  --ls-wide: 0.08em;
+  --ls-wider: 0.14em;
+
+  /* -- colour: dark surface (default) ------------------------------------- */
+  --bg-0: #06080c;
+  --bg-1: #0a0d13;
+  --bg-2: #0f131b;
+  --bg-3: #151a24;
+  --bg-glass: rgba(255, 255, 255, 0.05);
+  --bg-glass-hover: rgba(255, 255, 255, 0.09);
+
+  --line-1: rgba(255, 255, 255, 0.08);
+  --line-2: rgba(255, 255, 255, 0.14);
+  --line-3: rgba(255, 255, 255, 0.24);
+
+  --text-1: #f4f6fa;
+  --text-2: rgba(244, 246, 250, 0.72);
+  --text-3: rgba(244, 246, 250, 0.52);
+  --text-inverse: #0a0d13;
+
+  --accent: #b8f26b;
+  --accent-2: #62e4b4;
+  --accent-ink: #0b1405;
+  --accent-soft: rgba(184, 242, 107, 0.14);
+  --accent-line: rgba(184, 242, 107, 0.35);
+
+  --danger: #ff6b6b;
+  --warn: #ffc861;
+
+  /* -- colour: light surface ---------------------------------------------- */
+  --paper-0: #ffffff;
+  --paper-1: #f5f7fa;
+  --paper-2: #eef1f5;
+  --ink-1: #0c1120;
+  --ink-2: #4f5969;
+  --ink-3: #7a8494;
+  --ink-line-1: rgba(12, 17, 32, 0.08);
+  --ink-line-2: rgba(12, 17, 32, 0.14);
+
+  /* -- space (4px base) --------------------------------------------------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 2.5rem;
+  --s-8: 3rem;
+  --s-9: 4rem;
+  --s-10: 5rem;
+  --s-11: 6rem;
+  --s-12: 8rem;
+
+  /* -- radii --------------------------------------------------------------- */
+  --r-xs: 0.375rem;
+  --r-sm: 0.625rem;
+  --r-md: 1rem;
+  --r-lg: 1.5rem;
+  --r-xl: 2rem;
+  --r-2xl: 2.5rem;
+  --r-pill: 999px;
+
+  /* -- layout -------------------------------------------------------------- */
+  --container: 84rem;
+  --container-narrow: 64rem;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --nav-h: 4.5rem;
+  --section-pad-y: clamp(3.5rem, 7vh, 6rem);
+
+  /* -- elevation ----------------------------------------------------------- */
+  --shadow-1: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 30px -14px rgba(0, 0, 0, 0.55);
+  --shadow-2: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 30px 70px -24px rgba(0, 0, 0, 0.7);
+  --shadow-light: 0 1px 2px rgba(12, 17, 32, 0.05), 0 24px 60px -28px rgba(12, 17, 32, 0.25);
+  --glow-accent: 0 0 0 1px var(--accent-line), 0 0 48px -10px rgba(184, 242, 107, 0.55);
+
+  /* -- motion -------------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-1: 160ms;
+  --dur-2: 320ms;
+  --dur-3: 600ms;
+  --dur-4: 1000ms;
+}
+
+/* Light surface: remap the semantic names in place. */
+.theme-light {
+  color-scheme: light;
+
+  --bg-0: var(--paper-0);
+  --bg-1: var(--paper-1);
+  --bg-2: var(--paper-1);
+  --bg-3: var(--paper-2);
+  --bg-glass: rgba(12, 17, 32, 0.04);
+  --bg-glass-hover: rgba(12, 17, 32, 0.07);
+
+  --line-1: var(--ink-line-1);
+  --line-2: var(--ink-line-2);
+  --line-3: rgba(12, 17, 32, 0.24);
+
+  --text-1: var(--ink-1);
+  --text-2: var(--ink-2);
+  --text-3: var(--ink-3);
+  --text-inverse: #ffffff;
+
+  --accent: #4f9d13;           /* deeper lime: 4.6:1 on white */
+  --accent-soft: rgba(79, 157, 19, 0.1);
+  --accent-line: rgba(79, 157, 19, 0.35);
+
+  --shadow-1: var(--shadow-light);
+  --shadow-2: var(--shadow-light);
+}
+
+@media (max-width: 48em) {
+  :root {
+    --nav-h: 4rem;
+    --section-pad-y: clamp(3rem, 8vh, 4.5rem);
+  }
+}

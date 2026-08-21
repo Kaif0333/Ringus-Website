@@ -1,0 +1,256 @@
+/* ==========================================================================
+   05 · How it works
+   Three step cards joined by a connector that fills as the reader scrolls,
+   lighting each node as the signal reaches it.
+
+   The connector is a single element drawn over the cards and masked out where
+   it would cross an icon, so it reads as running behind the three nodes
+   without depending on stacking order (which the reveal and hover transforms
+   on the cards would otherwise disturb). With three equal columns the icon
+   centres sit at exactly 0 / 50 / 100 % of the line, which is what the mask
+   relies on; the stacked layout keeps that true with equal-height rows.
+   ========================================================================== */
+
+.how {
+  background:
+    radial-gradient(48% 40% at 50% 60%, color-mix(in srgb, var(--accent) 6%, transparent) 0%, transparent 70%),
+    var(--bg-0);
+}
+
+/* -- steps ----------------------------------------------------------------- */
+
+.how__steps {
+  --how-gap: var(--s-6);
+  --how-pad-y: var(--s-6);
+  --how-pad-x: var(--s-5);
+  --how-icon: 3.25rem;
+  --how-band: 1.75rem;   /* connector box: room for the fill's glow either side of the 1px line */
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--how-gap);
+}
+
+.how__step {
+  position: relative;
+  min-width: 0;
+  padding: var(--how-pad-y) var(--how-pad-x);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-xl);
+  background-color: var(--bg-1);
+}
+
+/* Specificity deliberately matches the global reveal rule
+   (html.motion [data-reveal].is-in), which would otherwise pin `transition`
+   once the card has revealed. Opacity and transform keep the reveal's own
+   timing; the lift uses the independent `translate` property so it never
+   fights the reveal's `transform: none`. */
+html .how .how__steps > .how__step {
+  transition:
+    opacity var(--dur-4) var(--ease-out),
+    transform var(--dur-4) var(--ease-out),
+    translate var(--dur-3) var(--ease-out),
+    border-color var(--dur-3) var(--ease-out);
+}
+
+.how__step:hover {
+  translate: 0 -4px;
+  border-color: var(--line-2);
+}
+
+.how__num {
+  position: absolute;
+  inset-block-start: var(--how-pad-y);
+  inset-inline-end: var(--how-pad-x);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--ls-wide);
+  color: var(--text-3);
+}
+
+.how__icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--how-icon);
+  height: var(--how-icon);
+  margin-block-end: var(--s-5);
+  border: 1px solid var(--accent-line);
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-size: 1.25rem;
+}
+
+/* Lit state: an accent ring and soft glow faded in over the resting icon. */
+.how__icon::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background-color: color-mix(in srgb, var(--accent) 10%, transparent);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 18px color-mix(in srgb, var(--accent) 45%, transparent);
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+
+.how__step.is-lit .how__icon::after {
+  opacity: 1;
+}
+
+.how__title {
+  margin-block-end: var(--s-3);
+  font-size: var(--fs-xl);
+  font-weight: 400;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-snug);
+}
+
+.how__text {
+  max-width: 30ch;
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
+  color: var(--text-2);
+}
+
+/* -- connector ------------------------------------------------------------- */
+
+.how__line {
+  --how-hole: calc(var(--how-icon) / 2 + 1px);
+  --how-mask-dir: to right;
+  /* Only the alpha channel of a mask matters; any opaque token serves. */
+  --how-mask: linear-gradient(
+    var(--how-mask-dir),
+    transparent var(--how-hole),
+    var(--text-1) var(--how-hole),
+    var(--text-1) calc(50% - var(--how-hole)),
+    transparent calc(50% - var(--how-hole)),
+    transparent calc(50% + var(--how-hole)),
+    var(--text-1) calc(50% + var(--how-hole)),
+    var(--text-1) calc(100% - var(--how-hole)),
+    transparent calc(100% - var(--how-hole))
+  );
+  position: absolute;
+  z-index: 1;
+  /* From the first icon centre to the last icon centre. */
+  inset-inline:
+    calc(var(--how-pad-x) + var(--how-icon) / 2)
+    calc((100% - 2 * var(--how-gap)) / 3 - var(--how-pad-x) - var(--how-icon) / 2);
+  inset-block-start: calc(var(--how-pad-y) + (var(--how-icon) - var(--how-band)) / 2);
+  height: var(--how-band);
+  pointer-events: none;
+  -webkit-mask-image: var(--how-mask);
+  mask-image: var(--how-mask);
+}
+
+.how__line::before,
+.how__line-fill {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 1px;
+}
+
+.how__line::before {
+  content: "";
+  background-color: var(--line-2);
+}
+
+.how__line-fill {
+  --how-p: 1;   /* rewound to 0 by initHow() only when it will animate */
+  display: block;
+  background-color: var(--accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 65%, transparent);
+  transform: scaleX(var(--how-p));
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* -- responsive ------------------------------------------------------------ */
+
+/* Short laptops (1366×768, 1280×720): the headline steps down a size and the
+   cards' vertical rhythm tightens. */
+@media (min-width: 64em) and (max-height: 50em) {
+  .how .section__head h2 {
+    font-size: clamp(1.75rem, 1rem + 2vw, 2.5rem);
+  }
+
+  .how__steps {
+    --how-pad-y: var(--s-5);
+  }
+
+  .how__icon {
+    margin-block-end: var(--s-4);
+  }
+}
+
+/* Tablet and phone: a single centred column. Each card becomes an icon rail
+   with the copy beside it, and the connector turns vertical down the rail. */
+@media (max-width: 64em) {
+  .how__steps {
+    --how-gap: var(--s-4);
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: 1fr;   /* equal rows keep the icon centres at 0 / 50 / 100 % of the connector */
+    max-width: 36rem;
+    margin-inline: auto;
+  }
+
+  .how__step {
+    display: grid;
+    grid-template-columns: var(--how-icon) minmax(0, 1fr);
+    grid-template-rows: var(--how-icon) auto;
+    column-gap: var(--s-4);
+    row-gap: var(--s-3);
+    align-items: start;
+  }
+
+  .how__icon {
+    grid-row: 1 / span 2;
+    margin-block-end: 0;
+  }
+
+  .how__title {
+    align-self: center;
+    margin-block-end: 0;
+  }
+
+  .how__text {
+    max-width: 40ch;
+  }
+
+  .how__line {
+    --how-mask-dir: to bottom;
+    inset-inline: calc(var(--how-pad-x) + (var(--how-icon) - var(--how-band)) / 2) auto;
+    inset-block:
+      calc(var(--how-pad-y) + var(--how-icon) / 2)
+      calc((100% - 2 * var(--how-gap)) / 3 - var(--how-pad-y) - var(--how-icon) / 2);
+    width: var(--how-band);
+    height: auto;
+  }
+
+  .how__line::before,
+  .how__line-fill {
+    width: 1px;
+    height: auto;
+  }
+
+  .how__line-fill {
+    transform: scaleY(var(--how-p));
+  }
+}
+
+@media (max-width: 36em) {
+  .how__steps {
+    --how-pad-y: var(--s-5);
+    --how-pad-x: var(--s-4);
+  }
+
+  .how__step {
+    border-radius: var(--r-lg);
+  }
+}

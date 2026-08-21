@@ -1,0 +1,131 @@
+/* ==========================================================================
+   Ringus — layout primitives
+   ========================================================================== */
+
+.container {
+  width: min(100% - (var(--gutter) * 2), var(--container));
+  margin-inline: auto;
+}
+
+.container--narrow {
+  width: min(100% - (var(--gutter) * 2), var(--container-narrow));
+  margin-inline: auto;
+}
+
+/* Every top-level section is a viewport-height slide on laptops. Content is
+   vertically centred and padded clear of the fixed nav; on short or narrow
+   screens the height constraint relaxes and the section simply flows. */
+.section {
+  position: relative;
+  display: grid;
+  align-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: calc(var(--nav-h) + var(--s-5)) var(--section-pad-y);
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
+.section--flush {
+  padding-block: 0;
+}
+
+.section--alt {
+  background-color: var(--bg-1);
+}
+
+.section--light {
+  background-color: var(--bg-0);
+  color: var(--text-1);
+}
+
+/* Section header pattern: eyebrow + headline + optional lead, left-aligned. */
+.section__head {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 44rem;
+  margin-block-end: clamp(var(--s-6), 4vh, var(--s-9));
+}
+
+.section__head--center {
+  margin-inline: auto;
+  text-align: center;
+  justify-items: center;
+}
+
+.section__head--split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: end;
+  gap: var(--s-6) var(--s-9);
+  max-width: none;
+}
+
+/* -- flow helpers ---------------------------------------------------------- */
+
+.stack > * + * {
+  margin-block-start: var(--stack-gap, var(--s-4));
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cluster-gap, var(--s-3));
+}
+
+.grid {
+  display: grid;
+  gap: var(--grid-gap, var(--s-5));
+}
+
+.grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.hairline {
+  height: 1px;
+  background-color: var(--line-1);
+}
+
+/* -- responsive ------------------------------------------------------------ */
+
+@media (max-width: 64em) {
+  .grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .section__head--split {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+@media (max-width: 48em) {
+  .section {
+    min-height: 0;
+    padding-block: calc(var(--nav-h) + var(--s-4)) var(--section-pad-y);
+    scroll-snap-align: none;
+  }
+
+  .grid--2,
+  .grid--3,
+  .grid--4 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Short laptop screens (e.g. 1366x768): tighten vertical rhythm so each
+   section still fits in one viewport. */
+@media (min-width: 64em) and (max-height: 50em) {
+  :root {
+    --section-pad-y: clamp(2rem, 4vh, 3rem);
+  }
+
+  .section {
+    padding-block-start: calc(var(--nav-h) + var(--s-4));
+  }
+
+  .section__head {
+    margin-block-end: var(--s-6);
+  }
+}

@@ -2,258 +2,743 @@
 <html lang="en" class="no-js">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#07090e">
-  <meta name="description" content="Ringus — the next-generation digital medical ring.">
-  <title>Ringus</title>
+  <meta name="theme-color" content="#06080c">
+  <title>Ringus — The digital medical ring</title>
+  <meta name="description" content="Ringus is a 2.4-gram titanium ring that reads heart rate, blood oxygen, skin temperature and sleep around the clock — with clinical-grade accuracy and a seven-day battery.">
+  <link rel="canonical" href="https://rignus-ring-website.vercel.app/">
 
-  <!-- Google Fonts: Host Grotesk — variable font, weights 300–800, upright + italic -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ringus">
+  <meta property="og:title" content="Ringus — The digital medical ring">
+  <meta property="og:description" content="Clinical-grade vitals in 2.4 grams of titanium. No screen, no strap, seven days on a charge.">
+  <meta property="og:url" content="https://rignus-ring-website.vercel.app/">
+  <meta property="og:image" content="https://rignus-ring-website.vercel.app/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Ringus — The digital medical ring">
+  <meta name="twitter:description" content="Clinical-grade vitals in 2.4 grams of titanium. No screen, no strap, seven days on a charge.">
+  <meta name="twitter:image" content="https://rignus-ring-website.vercel.app/og.png">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap">
 
-  <!-- Site styles -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Lucide Icons (UMD build → window.lucide). Version is pinned on purpose; bump it deliberately. -->
-  <script src="https://unpkg.com/lucide@1.33.0/dist/umd/lucide.min.js" defer></script>
-  <!-- Site script — `defer` keeps it running after Lucide, before DOMContentLoaded -->
-  <script src="script.js" defer></script>
+  <script type="module" src="/src/main.ts"></script>
 </head>
 <body>
-  <!-- Full-screen background video (assets/hero bg.mp4).
-       `loop` is the no-JS / unsupported-browser fallback; script.js removes it
-       and drives a canvas-assisted ping-pong loop instead. The canvas is only
-       shown while cached frames play in reverse. -->
-  <div class="hero-video" data-hero-video aria-hidden="true">
-    <video class="hero-video__media"
-           src="assets/hero%20bg.mp4"
-           autoplay muted loop playsinline
-           preload="auto"
-           disablepictureinpicture disableremoteplayback></video>
-    <canvas class="hero-video__canvas" hidden></canvas>
-    <div class="hero-video__overlay"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" data-cursor aria-hidden="true"></div>
+
+  <!-- ================================================================
+       Preloader — dismissed once fonts + hero media are ready (hard cap
+       1.8 s). Skipped entirely under reduced motion.
+       ================================================================ -->
+  <div class="preloader" data-preloader aria-hidden="true">
+    <div class="preloader__inner">
+      <svg class="preloader__mark" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="17" fill="none" stroke="currentColor" stroke-opacity="0.18" stroke-width="9"/>
+        <circle class="preloader__arc" cx="32" cy="32" r="17" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
+        <circle cx="32" cy="15" r="3" class="preloader__led"/>
+      </svg>
+      <span class="preloader__pct t-num" data-preloader-pct>0</span>
+    </div>
   </div>
 
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- ==================================================================
+  <!-- ================================================================
        Navigation
-       ================================================================== -->
-  <header class="navbar">
-    <div class="container navbar__inner">
+       ================================================================ -->
+  <header class="nav" data-nav>
+    <div class="container nav__inner">
+      <a class="nav__brand" href="#hero" aria-label="Ringus — home">
+        <img class="nav__logo" src="/assets/logo.png" alt="" width="24" height="24">
+        <span class="nav__name">Ringus</span>
+      </a>
 
-      <div class="navbar__left">
-        <a class="brand" href="#" aria-label="Ringus — home">
-          <img class="brand__logo" src="assets/logo.png" alt="" width="24" height="24">
-          <span class="brand__name">Ringus</span>
+      <nav class="nav__links" aria-label="Primary">
+        <ul role="list">
+          <li><a href="#product" data-nav-link="product">Product</a></li>
+          <li><a href="#vitals" data-nav-link="vitals">Vitals</a></li>
+          <li><a href="#benefits" data-nav-link="benefits">Benefits</a></li>
+          <li><a href="#membership" data-nav-link="membership">Membership</a></li>
+          <li><a href="#faq" data-nav-link="faq">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav__actions">
+        <a class="btn btn--ghost btn--sm nav__store" href="#membership" data-magnetic>
+          <i data-lucide="shopping-bag" aria-hidden="true"></i>
+          <span>Store</span>
         </a>
-
-        <span class="navbar__divider" aria-hidden="true">|</span>
-
-        <nav class="navbar__nav" aria-label="Primary">
-          <ul class="nav-links" role="list">
-            <li>
-              <a class="nav-link" href="#">
-                <i data-lucide="home" aria-hidden="true"></i>
-                <span>home</span>
-              </a>
-            </li>
-            <li>
-              <a class="nav-link" href="#">
-                <i data-lucide="shopping-bag" aria-hidden="true"></i>
-                <span>store</span>
-              </a>
-            </li>
-            <li>
-              <a class="nav-link" href="#">
-                <i data-lucide="user" aria-hidden="true"></i>
-                <span>membership</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-
-      <div class="navbar__right">
-        <button type="button" class="pill pill--glass">
-          <i data-lucide="menu" aria-hidden="true"></i>
-          <span>Menu</span>
-        </button>
-        <button type="button" class="pill pill--solid">
+        <a class="btn btn--primary btn--sm" href="#cta" data-magnetic>
           <i data-lucide="user" aria-hidden="true"></i>
           <span>Subscribe</span>
+        </a>
+        <button type="button" class="nav__burger icon-btn" data-nav-toggle
+                aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+          <span class="nav__burger-lines" aria-hidden="true"><span></span><span></span></span>
         </button>
       </div>
-
     </div>
+    <span class="nav__progress" data-scroll-progress aria-hidden="true"></span>
   </header>
 
-  <!-- ==================================================================
-       Hero
-       ================================================================== -->
+  <!-- Mobile menu -->
+  <div class="menu" id="mobile-menu" data-menu hidden>
+    <nav class="menu__nav" aria-label="Mobile">
+      <ul class="menu__list" role="list">
+        <li><a class="menu__link" href="#product" data-menu-link><span class="menu__num">01</span>Product</a></li>
+        <li><a class="menu__link" href="#vitals" data-menu-link><span class="menu__num">02</span>Vitals</a></li>
+        <li><a class="menu__link" href="#benefits" data-menu-link><span class="menu__num">03</span>Benefits</a></li>
+        <li><a class="menu__link" href="#how" data-menu-link><span class="menu__num">04</span>How it works</a></li>
+        <li><a class="menu__link" href="#membership" data-menu-link><span class="menu__num">05</span>Membership</a></li>
+        <li><a class="menu__link" href="#faq" data-menu-link><span class="menu__num">06</span>FAQ</a></li>
+      </ul>
+    </nav>
+    <div class="menu__foot">
+      <a class="btn btn--primary btn--lg" href="#cta" data-menu-link>
+        <i data-lucide="user" aria-hidden="true"></i> Subscribe
+      </a>
+      <p class="menu__meta t-muted">hello@ringus.health</p>
+    </div>
+  </div>
+
   <main id="main" tabindex="-1">
-    <section class="hero">
-      <div class="container hero__inner">
 
-        <div class="hero__grid">
-
-          <!-- Left column -->
-          <div class="hero__copy">
-            <!-- Split into per-word masks for the entrance reveal. The words are
-                 real text separated by whitespace, so the accessible name is still
-                 "Wear the next generation". -->
-            <h1 class="hero__title">
-              <span class="word-mask"><span class="word-reveal">Wear</span></span>
-              <span class="word-mask"><span class="word-reveal">the</span></span>
-              <span class="word-mask"><span class="word-reveal">next</span></span>
-              <span class="word-mask"><span class="word-reveal">generation</span></span>
-            </h1>
-            <p class="hero__subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed.</p>
-
-            <form class="mailbox" action="#" method="post" novalidate>
-              <label class="visually-hidden" for="hero-email">Email address</label>
-              <input class="mailbox__input"
-                     id="hero-email"
-                     type="email"
-                     name="email"
-                     placeholder="Your mail ID required"
-                     autocomplete="email"
-                     required>
-              <button class="mailbox__submit" type="submit">Subscribe</button>
-            </form>
-          </div>
-
-          <!-- Right column -->
-          <div class="hero__aside">
-            <article class="med-card">
-              <div class="med-card__head">
-                <span class="med-card__badge" aria-hidden="true">
-                  <i data-lucide="heart-pulse"></i>
-                </span>
-                <span class="med-card__tag">Accurate &amp; Precise</span>
-              </div>
-
-              <h2 class="med-card__title">
-                Not only a <span class="med-card__soft">ring</span>, but a
-                <span class="med-card__soft">medical device</span> on your finger.
-              </h2>
-
-              <button type="button" class="med-card__cta">More info</button>
-            </article>
-
-            <div class="slider" aria-hidden="true">
-              <span class="slider__fill"></span>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Bottom left -->
-        <div class="hero__foot">
-          <img class="hero__glyph" src="assets/lorem%20paragph.png" alt="" width="114" height="114">
-          <p class="hero__note">
-            Lorem ipsum dolor sit amet,<br>
-            consectetur adipiscing elit, sed do<br>
-            eiusmod tempor incididunt ut<br>
-            labore et dolore magna aliqua.
-          </p>
-        </div>
-
+    <!-- ================================================================
+         01 · Hero
+         ================================================================ -->
+    <section class="section hero" id="hero" data-section="hero" aria-labelledby="hero-title">
+      <!-- Background video: native forward playback, canvas-assisted reverse.
+           `loop` is the no-JS fallback; the script takes over looping. -->
+      <div class="hero-video" data-hero-video aria-hidden="true">
+        <video class="hero-video__media"
+               src="/assets/hero%20bg.mp4"
+               autoplay muted loop playsinline
+               preload="auto"
+               disablepictureinpicture disableremoteplayback></video>
+        <canvas class="hero-video__canvas" hidden></canvas>
+        <div class="hero-video__overlay"></div>
       </div>
+
+      <div class="container hero__inner">
+        <div class="hero__copy">
+          <p class="eyebrow" data-hero-in>Digital medical ring · Second generation</p>
+
+          <h1 class="t-display hero__title" id="hero-title">
+            <span class="word"><span class="word__in">Wear</span></span>
+            <span class="word"><span class="word__in">the</span></span>
+            <span class="word"><span class="word__in">next</span></span>
+            <span class="word"><span class="word__in t-grad">generation</span></span>
+          </h1>
+
+          <p class="t-lead hero__lead" data-hero-in>
+            Clinical-grade heart, oxygen and temperature sensing in 2.4 grams of titanium.
+            No screen. No strap. Seven days on a single charge.
+          </p>
+
+          <form class="hero__form" data-hero-in data-subscribe action="#" method="post" novalidate>
+            <label class="visually-hidden" for="hero-email">Email address</label>
+            <input class="hero__input" id="hero-email" type="email" name="email"
+                   placeholder="Your mail ID required" autocomplete="email" required>
+            <button class="btn btn--white hero__submit" type="submit" data-magnetic>
+              <span data-subscribe-label>Subscribe</span>
+              <i data-lucide="arrow-right" class="lucide--arrow" aria-hidden="true"></i>
+            </button>
+            <p class="hero__form-note" data-subscribe-note aria-live="polite"></p>
+          </form>
+
+          <ul class="hero__trust cluster" role="list" data-hero-in>
+            <li class="pill"><i data-lucide="activity" aria-hidden="true"></i> ECG-grade accuracy</li>
+            <li class="pill"><i data-lucide="waves" aria-hidden="true"></i> Waterproof to 100 m</li>
+            <li class="pill"><i data-lucide="battery-full" aria-hidden="true"></i> 7-day battery</li>
+          </ul>
+        </div>
+
+        <!-- Live sample card -->
+        <aside class="hero__aside" aria-label="Sample live reading">
+          <div class="vcard card card--glass">
+            <header class="vcard__head">
+              <span class="vcard__live"><span class="vcard__dot" aria-hidden="true"></span> Live · sample</span>
+              <span class="vcard__time t-num" data-clock>—:—</span>
+            </header>
+
+            <div class="vcard__main">
+              <div class="vcard__metric">
+                <span class="vcard__label">Heart rate</span>
+                <span class="vcard__value t-num"><span data-hr>62</span><small>bpm</small></span>
+              </div>
+              <svg class="ecg" viewBox="0 0 240 64" preserveAspectRatio="none" aria-hidden="true">
+                <path class="ecg__grid" d="M0 36 H240"/>
+                <path class="ecg__trace" d="M0 36 L28 36 L34 31 L40 36 L50 36 L54 40 L58 10 L62 50 L66 36 L82 36 L90 28 L98 36 L118 36 L124 31 L130 36 L140 36 L144 40 L148 10 L152 50 L156 36 L172 36 L180 28 L188 36 L240 36"/>
+              </svg>
+            </div>
+
+            <dl class="vcard__grid">
+              <div class="vcard__cell">
+                <dt><i data-lucide="droplets" aria-hidden="true"></i> SpO₂</dt>
+                <dd class="t-num"><span data-spo2>98</span>%</dd>
+              </div>
+              <div class="vcard__cell">
+                <dt><i data-lucide="thermometer" aria-hidden="true"></i> Skin temp</dt>
+                <dd class="t-num">+0.2°</dd>
+              </div>
+              <div class="vcard__cell">
+                <dt><i data-lucide="moon" aria-hidden="true"></i> Sleep</dt>
+                <dd class="t-num">7h 42m</dd>
+              </div>
+            </dl>
+
+            <footer class="vcard__foot">
+              <span class="pill pill--accent"><i data-lucide="sparkles" aria-hidden="true"></i> Readiness 91</span>
+              <span class="t-muted vcard__note">Updated every 30 s</span>
+            </footer>
+          </div>
+        </aside>
+      </div>
+
+      <a class="hero__scroll" href="#product" aria-label="Scroll to the product section">
+        <span class="hero__scroll-track" aria-hidden="true"><span class="hero__scroll-thumb"></span></span>
+        <span class="hero__scroll-text">Scroll</span>
+      </a>
 
       <p class="hero__watermark" aria-hidden="true">Ringus</p>
     </section>
 
-    <!-- ==================================================================
-         Section 2 — Benefits
-         `.reveal-element` marks the blocks the Prompt 7 IntersectionObserver
-         will animate. They are inert until then: nothing here is hidden by
-         CSS, so the section reads correctly with the observer absent.
-         ================================================================== -->
-    <section class="benefits-section" aria-labelledby="benefits-title">
-      <div class="container benefits-section__inner">
+    <!-- ================================================================
+         02 · Product — interactive 3D ring
+         ================================================================ -->
+    <section class="section product" id="product" data-section="product" aria-labelledby="product-title">
+      <div class="container product__inner">
+        <div class="product__copy">
+          <p class="eyebrow" data-reveal>The hardware</p>
+          <h2 class="t-2xl" id="product-title" data-reveal>Engineered to disappear.</h2>
+          <p class="t-body product__text" data-reveal>
+            A grade-5 titanium shell, a sensor array that reads from the inside of your finger
+            where the signal is strongest, and a cell that lasts a week. Nothing on it you have
+            to look at. Nothing on it you have to charge every night.
+          </p>
 
-        <p class="benefits-tag reveal-element">
-          <i data-lucide="asterisk" aria-hidden="true"></i>
-          The benefits of digital medical ring
-        </p>
+          <dl class="product__specs" data-reveal>
+            <div><dt>Shell</dt><dd>Grade 5 titanium</dd></div>
+            <div><dt>Weight</dt><dd class="t-num">2.4 g</dd></div>
+            <div><dt>Water</dt><dd class="t-num">100 m</dd></div>
+            <div><dt>Battery</dt><dd class="t-num">7 days</dd></div>
+          </dl>
 
-        <div class="benefits-copy">
-          <h2 class="benefits-copy__headline reveal-element" id="benefits-title">
-            Choose Ringus to monitor vital parameters
-            <span class="benefits-copy__muted">and gain health clarity.</span>
-          </h2>
+          <div class="product__xr cluster" data-reveal>
+            <button type="button" class="btn btn--ghost btn--sm" data-xr="vr" hidden>
+              <i data-lucide="glasses" aria-hidden="true"></i> Enter VR
+            </button>
+            <button type="button" class="btn btn--ghost btn--sm" data-xr="ar" hidden>
+              <i data-lucide="scan" aria-hidden="true"></i> View in AR
+            </button>
+            <span class="product__hint t-muted">
+              <i data-lucide="move-3d" aria-hidden="true"></i>
+              <span data-ring-hint>Drag to rotate · scroll to spin</span>
+            </span>
+          </div>
+        </div>
 
-          <div class="benefits-copy__aside reveal-element">
-            <p class="benefits-copy__subtext">
-              Ringus reads heart rate, blood oxygen, skin temperature and movement around
-              the clock, then turns the raw signal into something you can act on — no
-              screen, no strap, and no daily charge to remember.
+        <div class="product__stage" data-ring-stage>
+          <canvas class="product__canvas" data-ring-canvas role="img"
+                  aria-label="Interactive three-dimensional model of the Ringus ring"></canvas>
+
+          <div class="product__hotspots" aria-hidden="true">
+            <div class="hotspot" data-hotspot="sensor">
+              <span class="hotspot__dot"></span>
+              <div class="hotspot__card">
+                <p class="hotspot__title">Sensor array</p>
+                <p class="hotspot__text">Green and red optics plus a thermistor, reading from the palm side.</p>
+              </div>
+            </div>
+            <div class="hotspot" data-hotspot="shell">
+              <span class="hotspot__dot"></span>
+              <div class="hotspot__card">
+                <p class="hotspot__title">Titanium shell</p>
+                <p class="hotspot__text">PVD-coated grade 5. Scratch-resistant, hypoallergenic, 2.4 g.</p>
+              </div>
+            </div>
+            <div class="hotspot" data-hotspot="cell">
+              <span class="hotspot__dot"></span>
+              <div class="hotspot__card">
+                <p class="hotspot__title">Seven-day cell</p>
+                <p class="hotspot__text">Curved lithium-polymer cell. Full charge in 60 minutes.</p>
+              </div>
+            </div>
+          </div>
+
+          <span class="product__shadow" aria-hidden="true"></span>
+
+          <!-- Shown instead of the canvas when WebGL is unavailable -->
+          <figure class="product__fallback" data-ring-fallback hidden>
+            <img src="/assets/card_ring_metrics.jpg" alt="The Ringus ring resting on slate, its inner sensor array lit green." width="1200" height="896" loading="lazy" decoding="async">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         03 · Vitals — what it measures
+         ================================================================ -->
+    <section class="section section--alt vitals" id="vitals" data-section="vitals" aria-labelledby="vitals-title">
+      <div class="marquee vitals__marquee" aria-hidden="true">
+        <div class="marquee__track">
+          <span class="marquee__item"><i data-lucide="heart-pulse"></i> Heart rate</span>
+          <span class="marquee__item"><i data-lucide="droplets"></i> Blood oxygen</span>
+          <span class="marquee__item"><i data-lucide="thermometer"></i> Skin temperature</span>
+          <span class="marquee__item"><i data-lucide="moon"></i> Sleep stages</span>
+          <span class="marquee__item"><i data-lucide="activity"></i> Heart-rate variability</span>
+          <span class="marquee__item"><i data-lucide="wind"></i> Respiratory rate</span>
+          <span class="marquee__item"><i data-lucide="heart-pulse"></i> Heart rate</span>
+          <span class="marquee__item"><i data-lucide="droplets"></i> Blood oxygen</span>
+          <span class="marquee__item"><i data-lucide="thermometer"></i> Skin temperature</span>
+          <span class="marquee__item"><i data-lucide="moon"></i> Sleep stages</span>
+          <span class="marquee__item"><i data-lucide="activity"></i> Heart-rate variability</span>
+          <span class="marquee__item"><i data-lucide="wind"></i> Respiratory rate</span>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="section__head section__head--split">
+          <div class="stack">
+            <p class="eyebrow" data-reveal>What it measures</p>
+            <h2 class="t-2xl" id="vitals-title" data-reveal>Your body, in numbers you can actually read.</h2>
+          </div>
+          <p class="t-body" data-reveal>
+            Six signals, sampled continuously and turned into a single daily readiness
+            score. Every number below is a sample reading, animated the way the app shows it.
+          </p>
+        </div>
+
+        <div class="vitals__grid">
+          <article class="card card--pad card--spot vitals__card vitals__card--hr" data-reveal data-spot>
+            <header class="vitals__card-head">
+              <span class="vitals__icon"><i data-lucide="heart-pulse" aria-hidden="true"></i></span>
+              <span class="vitals__label">Resting heart rate</span>
+              <span class="pill">Tonight</span>
+            </header>
+            <p class="vitals__value t-num"><span data-count="58" data-count-from="40">58</span><small>bpm</small></p>
+            <svg class="vitals__ecg" viewBox="0 0 480 80" preserveAspectRatio="none" aria-hidden="true">
+              <path class="vitals__ecg-trace" d="M0 44 L40 44 L48 38 L56 44 L70 44 L76 50 L82 12 L88 62 L94 44 L118 44 L128 34 L138 44 L176 44 L184 38 L192 44 L206 44 L212 50 L218 12 L224 62 L230 44 L254 44 L264 34 L274 44 L312 44 L320 38 L328 44 L342 44 L348 50 L354 12 L360 62 L366 44 L390 44 L400 34 L410 44 L480 44"/>
+            </svg>
+            <p class="vitals__caption t-muted">4 bpm below your 30-day baseline — a strong recovery signal.</p>
+          </article>
+
+          <article class="card card--pad card--spot vitals__card vitals__card--spo2" data-reveal data-spot>
+            <header class="vitals__card-head">
+              <span class="vitals__icon"><i data-lucide="droplets" aria-hidden="true"></i></span>
+              <span class="vitals__label">Blood oxygen</span>
+            </header>
+            <div class="vitals__gauge" data-gauge="98" aria-hidden="true">
+              <svg viewBox="0 0 120 120">
+                <circle class="vitals__gauge-track" cx="60" cy="60" r="52"/>
+                <circle class="vitals__gauge-fill" cx="60" cy="60" r="52" data-gauge-fill/>
+              </svg>
+              <span class="vitals__gauge-value t-num"><span data-count="98" data-count-from="80">98</span><small>%</small></span>
+            </div>
+            <p class="vitals__caption t-muted">Overnight average. Dips below 94% are flagged.</p>
+          </article>
+
+          <article class="card card--pad card--spot vitals__card vitals__card--temp" data-reveal data-spot>
+            <header class="vitals__card-head">
+              <span class="vitals__icon"><i data-lucide="thermometer" aria-hidden="true"></i></span>
+              <span class="vitals__label">Skin temperature</span>
+            </header>
+            <p class="vitals__value t-num">+<span data-count="0.2" data-count-decimals="1" data-count-from="0">0.2</span><small>°C</small></p>
+            <svg class="vitals__spark" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true">
+              <polyline class="vitals__spark-line" points="0,30 20,28 40,31 60,26 80,27 100,22 120,24 140,18 160,20 180,14 200,12"/>
+            </svg>
+            <p class="vitals__caption t-muted">Deviation from your personal baseline, not absolute.</p>
+          </article>
+
+          <article class="card card--pad card--spot vitals__card vitals__card--sleep" data-reveal data-spot>
+            <header class="vitals__card-head">
+              <span class="vitals__icon"><i data-lucide="moon" aria-hidden="true"></i></span>
+              <span class="vitals__label">Sleep</span>
+              <span class="pill">7 nights</span>
+            </header>
+            <p class="vitals__value t-num"><span data-count="86" data-count-from="60">86</span><small>score</small></p>
+            <div class="vitals__bars" data-bars aria-hidden="true">
+              <span style="--h: 62%"></span><span style="--h: 74%"></span><span style="--h: 58%"></span>
+              <span style="--h: 81%"></span><span style="--h: 90%"></span><span style="--h: 70%"></span><span style="--h: 86%"></span>
+            </div>
+            <p class="vitals__caption t-muted">Deep 1h 48m · REM 1h 52m · Light 4h 02m</p>
+          </article>
+
+          <article class="card card--pad card--spot vitals__card vitals__card--hrv" data-reveal data-spot>
+            <header class="vitals__card-head">
+              <span class="vitals__icon"><i data-lucide="activity" aria-hidden="true"></i></span>
+              <span class="vitals__label">HRV</span>
+            </header>
+            <p class="vitals__value t-num"><span data-count="64" data-count-from="30">64</span><small>ms</small></p>
+            <p class="vitals__trend"><span class="pill pill--accent"><i data-lucide="arrow-up-right" aria-hidden="true"></i> +8% this week</span></p>
+            <p class="vitals__caption t-muted">Higher variability means a calmer, better-recovered nervous system.</p>
+          </article>
+
+          <article class="card card--pad vitals__card vitals__card--ready" data-reveal>
+            <p class="eyebrow eyebrow--plain">Readiness</p>
+            <p class="vitals__ready t-num"><span data-count="91" data-count-from="0">91</span></p>
+            <p class="vitals__ready-text">
+              One number for the morning. Built from tonight's heart rate, HRV, temperature and sleep — so you know whether to push or rest.
             </p>
-            <a class="benefits-cta" href="#">
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         04 · Benefits — light surface
+         ================================================================ -->
+    <section class="section section--light theme-light benefits" id="benefits" data-section="benefits" aria-labelledby="benefits-title">
+      <div class="container">
+        <div class="section__head section__head--split">
+          <div class="stack">
+            <p class="eyebrow eyebrow--plain benefits__eyebrow" data-reveal><i data-lucide="asterisk" aria-hidden="true"></i> The benefits of a digital medical ring</p>
+            <h2 class="t-2xl" id="benefits-title" data-reveal>
+              Choose Ringus to monitor vital parameters
+              <span class="t-muted">and gain health clarity.</span>
+            </h2>
+          </div>
+          <div class="stack benefits__aside" data-reveal>
+            <p class="t-body">
+              Ringus reads heart rate, blood oxygen, skin temperature and movement around the
+              clock, then turns the raw signal into something you can act on — no screen, no
+              strap, and no daily charge to remember.
+            </p>
+            <a class="btn btn--ink" href="#cta" data-magnetic>
               Get in touch
-              <span class="benefits-cta__arrow" aria-hidden="true">
-                <i data-lucide="arrow-right"></i>
-              </span>
+              <span class="btn__orb" aria-hidden="true"><i data-lucide="arrow-right"></i></span>
             </a>
           </div>
         </div>
 
-        <ul class="benefit-cards" role="list">
-          <li class="benefit-card reveal-element">
-            <img class="benefit-card__media"
-                 src="assets/card_ring_metrics.jpg"
+        <div class="benefits__bento">
+          <article class="card card--interactive benefits__card benefits__card--metrics" data-reveal>
+            <img class="benefits__media" src="/assets/card_ring_metrics.jpg"
                  alt="The Ringus ring resting on slate, its inner sensor array lit green."
-                 width="1200" height="883" loading="lazy" decoding="async">
-            <div class="benefit-card__body">
-              <p class="benefit-card__stat">99.4%</p>
-              <p class="benefit-card__label">Clinical accuracy</p>
-              <p class="benefit-card__desc">
-                Validated against medical-grade reference devices for heart rate, blood
-                oxygen and skin temperature.
-              </p>
+                 width="1200" height="896" loading="lazy" decoding="async">
+            <div class="benefits__body">
+              <p class="stat__value t-num"><span data-count="99.4" data-count-decimals="1" data-count-from="90">99.4</span>%</p>
+              <p class="stat__label">Clinical accuracy</p>
+              <p class="benefits__desc">Validated against medical-grade reference devices for heart rate, blood oxygen and skin temperature.</p>
             </div>
-          </li>
+          </article>
 
-          <li class="benefit-card benefit-card--wide reveal-element">
-            <img class="benefit-card__media"
-                 src="assets/card_ring_lifestyle.jpg"
-                 alt="A hiker on a mountain ridge at sunset, overlaid with live readings from the ring: oxygen saturation, heart rate and elevation."
+          <article class="card card--interactive benefits__card benefits__card--lifestyle" data-reveal>
+            <img class="benefits__media" src="/assets/card_ring_lifestyle.jpg"
+                 alt="A hiker on a mountain ridge at sunset, overlaid with live readings from the ring."
                  width="1376" height="769" loading="lazy" decoding="async">
-            <div class="benefit-card__body">
-              <p class="benefit-card__stat">7-Day</p>
-              <p class="benefit-card__label">Battery life</p>
-              <p class="benefit-card__desc">
-                A full week of continuous monitoring on a single charge, so the record
-                never has gaps in it.
-              </p>
+            <div class="benefits__body">
+              <p class="stat__value">7-Day</p>
+              <p class="stat__label">Battery life</p>
+              <p class="benefits__desc">A full week of continuous monitoring on a single charge, so the record never has gaps in it.</p>
             </div>
-          </li>
-        </ul>
+          </article>
 
-        <div class="footer-track reveal-element">
-          <ol class="footer-track__nums" role="list">
+          <article class="card card--interactive card--pad benefits__card benefits__card--tile" data-reveal>
+            <span class="benefits__tile-icon"><i data-lucide="waves" aria-hidden="true"></i></span>
+            <p class="stat__value t-num"><span data-count="100" data-count-from="0">100</span> m</p>
+            <p class="stat__label">Waterproof</p>
+          </article>
+
+          <article class="card card--interactive card--pad benefits__card benefits__card--tile" data-reveal>
+            <span class="benefits__tile-icon"><i data-lucide="feather" aria-hidden="true"></i></span>
+            <p class="stat__value t-num"><span data-count="2.4" data-count-decimals="1" data-count-from="0">2.4</span> g</p>
+            <p class="stat__label">Titanium, grade 5</p>
+          </article>
+        </div>
+
+        <div class="benefits__track" data-reveal>
+          <ol class="benefits__nums" role="list">
             <li>02</li><li>03</li><li>04</li><li>05</li><li>06</li><li>07</li><li>08</li>
           </ol>
-          <div class="footer-progress" aria-hidden="true">
-            <span class="footer-progress-fill"></span>
+          <div class="benefits__progress" aria-hidden="true"><span class="benefits__progress-fill" data-progress-fill></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         05 · How it works
+         ================================================================ -->
+    <section class="section how" id="how" data-section="how" aria-labelledby="how-title">
+      <div class="container">
+        <div class="section__head section__head--center">
+          <p class="eyebrow" data-reveal>How it works</p>
+          <h2 class="t-2xl" id="how-title" data-reveal>Three steps to clarity.</h2>
+          <p class="t-body" data-reveal>Put it on. Forget about it. Read the story in the morning.</p>
+        </div>
+
+        <ol class="how__steps" role="list" data-how>
+          <li class="how__step" data-reveal>
+            <span class="how__num t-num">01</span>
+            <span class="how__icon"><i data-lucide="circle-dot" aria-hidden="true"></i></span>
+            <h3 class="how__title">Wear</h3>
+            <p class="how__text">Any finger, any hand. The sensors read from the palm side, where capillaries sit closest to the skin.</p>
+          </li>
+          <li class="how__step" data-reveal>
+            <span class="how__num t-num">02</span>
+            <span class="how__icon"><i data-lucide="bluetooth" aria-hidden="true"></i></span>
+            <h3 class="how__title">Sync</h3>
+            <p class="how__text">Seven days of readings stored on the ring, synced to your phone whenever it is nearby. Encrypted end to end.</p>
+          </li>
+          <li class="how__step" data-reveal>
+            <span class="how__num t-num">03</span>
+            <span class="how__icon"><i data-lucide="sparkles" aria-hidden="true"></i></span>
+            <h3 class="how__title">Understand</h3>
+            <p class="how__text">A readiness score each morning, trends across weeks, and a one-tap report your clinician can actually use.</p>
+          </li>
+          <span class="how__line" aria-hidden="true"><span class="how__line-fill" data-how-line></span></span>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         06 · Proof — numbers and voices
+         ================================================================ -->
+    <section class="section section--alt proof" id="proof" data-section="proof" aria-labelledby="proof-title">
+      <div class="container">
+        <div class="section__head section__head--center">
+          <p class="eyebrow" data-reveal>Validation</p>
+          <h2 class="t-2xl" id="proof-title" data-reveal>Accurate enough to trust. Quiet enough to forget.</h2>
+        </div>
+
+        <dl class="proof__stats" data-reveal>
+          <div class="proof__stat">
+            <dt class="stat__label">Clinical accuracy</dt>
+            <dd class="stat__value t-num"><span data-count="99.4" data-count-decimals="1" data-count-from="90">99.4</span>%</dd>
+          </div>
+          <div class="proof__stat">
+            <dt class="stat__label">Nights recorded in validation</dt>
+            <dd class="stat__value t-num"><span data-count="12400" data-count-from="0" data-count-sep>12,400</span></dd>
+          </div>
+          <div class="proof__stat">
+            <dt class="stat__label">Reference devices</dt>
+            <dd class="stat__value t-num"><span data-count="3" data-count-from="0">3</span></dd>
+          </div>
+          <div class="proof__stat">
+            <dt class="stat__label">Average daily wear</dt>
+            <dd class="stat__value t-num"><span data-count="23.1" data-count-decimals="1" data-count-from="0">23.1</span><small>h</small></dd>
+          </div>
+        </dl>
+
+        <div class="proof__carousel" data-carousel data-reveal>
+          <div class="proof__viewport" data-carousel-viewport aria-live="polite">
+            <ul class="proof__track" role="list" data-carousel-track>
+              <li class="proof__slide card card--pad" data-carousel-slide>
+                <i class="proof__quote-mark" data-lucide="quote" aria-hidden="true"></i>
+                <blockquote class="proof__quote">
+                  <p>The first wearable my patients keep on. Seven days of continuous data with no gaps changes what I can see in a consult.</p>
+                </blockquote>
+                <footer class="proof__by"><span class="proof__name">Dr. Ananya R.</span><span class="proof__role t-muted">Cardiologist</span></footer>
+              </li>
+              <li class="proof__slide card card--pad" data-carousel-slide>
+                <i class="proof__quote-mark" data-lucide="quote" aria-hidden="true"></i>
+                <blockquote class="proof__quote">
+                  <p>I stopped looking at my wrist. The morning readiness number is the only thing I check now, and it has been right every time I ignored it.</p>
+                </blockquote>
+                <footer class="proof__by"><span class="proof__name">Marcus T.</span><span class="proof__role t-muted">Ultramarathon runner</span></footer>
+              </li>
+              <li class="proof__slide card card--pad" data-carousel-slide>
+                <i class="proof__quote-mark" data-lucide="quote" aria-hidden="true"></i>
+                <blockquote class="proof__quote">
+                  <p>It caught a temperature rise two days before I felt anything. I rested. My team did not get sick.</p>
+                </blockquote>
+                <footer class="proof__by"><span class="proof__name">Lena K.</span><span class="proof__role t-muted">Product lead</span></footer>
+              </li>
+            </ul>
+          </div>
+          <div class="proof__controls">
+            <button type="button" class="icon-btn" data-carousel-prev aria-label="Previous testimonial"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
+            <div class="proof__dots" data-carousel-dots role="tablist" aria-label="Choose testimonial"></div>
+            <button type="button" class="icon-btn" data-carousel-next aria-label="Next testimonial"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         07 · Membership
+         ================================================================ -->
+    <section class="section membership" id="membership" data-section="membership" aria-labelledby="membership-title">
+      <div class="container">
+        <div class="section__head section__head--center">
+          <p class="eyebrow" data-reveal>Membership</p>
+          <h2 class="t-2xl" id="membership-title" data-reveal>Own the ring. Choose how much it tells you.</h2>
+          <div class="membership__billing" data-reveal>
+            <span class="membership__billing-label is-active" data-billing-label="monthly">Monthly</span>
+            <button type="button" class="switch" role="switch" aria-checked="false" data-billing-toggle aria-label="Bill yearly"></button>
+            <span class="membership__billing-label" data-billing-label="yearly">Yearly <span class="pill pill--accent">Save 20%</span></span>
           </div>
         </div>
 
+        <div class="membership__plans" data-plans data-billing="monthly">
+          <article class="card card--pad membership__plan" data-reveal>
+            <h3 class="membership__name">Ring</h3>
+            <p class="membership__price"><span class="membership__currency">$</span><span class="membership__amount t-num" data-price-monthly="299" data-price-yearly="299">299</span><span class="membership__per">one-time</span></p>
+            <p class="membership__blurb t-muted">The hardware, no subscription. Heart rate, SpO₂, temperature and sleep, forever.</p>
+            <ul class="membership__features" role="list">
+              <li><i data-lucide="check" aria-hidden="true"></i> Titanium ring + charger</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Live vitals and nightly summary</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> 7-day on-ring storage</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> 2-year warranty</li>
+            </ul>
+            <a class="btn btn--ghost membership__cta" href="#cta">Buy the ring</a>
+          </article>
+
+          <article class="card card--pad membership__plan membership__plan--featured" data-reveal>
+            <span class="pill pill--accent membership__badge">Most chosen</span>
+            <h3 class="membership__name">Membership</h3>
+            <p class="membership__price"><span class="membership__currency">$</span><span class="membership__amount t-num" data-price-monthly="8" data-price-yearly="6.4">8</span><span class="membership__per" data-per>/ month</span></p>
+            <p class="membership__blurb t-muted">Readiness, trends and early warnings. Everything the ring knows, explained.</p>
+            <ul class="membership__features" role="list">
+              <li><i data-lucide="check" aria-hidden="true"></i> Daily readiness score</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> 90-day trends and baselines</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Illness and temperature alerts</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Share with one clinician</li>
+            </ul>
+            <a class="btn btn--primary membership__cta" href="#cta" data-magnetic>Start membership</a>
+          </article>
+
+          <article class="card card--pad membership__plan" data-reveal>
+            <h3 class="membership__name">Clinical</h3>
+            <p class="membership__price"><span class="membership__currency">$</span><span class="membership__amount t-num" data-price-monthly="19" data-price-yearly="15.2">19</span><span class="membership__per" data-per>/ month</span></p>
+            <p class="membership__blurb t-muted">For clinicians and coaches following more than one person.</p>
+            <ul class="membership__features" role="list">
+              <li><i data-lucide="check" aria-hidden="true"></i> Multi-patient dashboard</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Raw data export (CSV, FHIR)</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Threshold alerts by SMS</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Priority support</li>
+            </ul>
+            <a class="btn btn--ghost membership__cta" href="#cta">Talk to us</a>
+          </article>
+        </div>
       </div>
     </section>
+
+    <!-- ================================================================
+         08 · FAQ
+         ================================================================ -->
+    <section class="section section--alt faq" id="faq" data-section="faq" aria-labelledby="faq-title">
+      <div class="container faq__inner">
+        <div class="section__head faq__head">
+          <p class="eyebrow" data-reveal>Questions</p>
+          <h2 class="t-2xl" id="faq-title" data-reveal>Everything people ask before they order.</h2>
+          <p class="t-body" data-reveal>Something else? Write to <a class="btn--link" href="mailto:hello@ringus.health">hello@ringus.health</a>.</p>
+        </div>
+
+        <div class="acc faq__list" data-accordion data-reveal>
+          <div class="acc__item">
+            <h3><button type="button" class="acc__trigger" aria-expanded="false" aria-controls="faq-1" id="faq-1-btn">Is Ringus a medical device?<span class="acc__icon"><i data-lucide="plus" aria-hidden="true"></i></span></button></h3>
+            <div class="acc__panel" id="faq-1" role="region" aria-labelledby="faq-1-btn"><div><p class="acc__body">Ringus is designed and validated to medical-device standards, but it is sold as a wellness product. It does not diagnose or treat any condition; it gives you and your clinician continuous, accurate data to talk about.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3><button type="button" class="acc__trigger" aria-expanded="false" aria-controls="faq-2" id="faq-2-btn">How accurate is it, really?<span class="acc__icon"><i data-lucide="plus" aria-hidden="true"></i></span></button></h3>
+            <div class="acc__panel" id="faq-2" role="region" aria-labelledby="faq-2-btn"><div><p class="acc__body">In internal validation against three medical-grade reference devices, heart rate, blood oxygen and skin temperature agreed 99.4% of the time within clinical tolerance. Reading from the palm side of the finger is what makes that possible.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3><button type="button" class="acc__trigger" aria-expanded="false" aria-controls="faq-3" id="faq-3-btn">How long does the battery last?<span class="acc__icon"><i data-lucide="plus" aria-hidden="true"></i></span></button></h3>
+            <div class="acc__panel" id="faq-3" role="region" aria-labelledby="faq-3-btn"><div><p class="acc__body">Seven days of continuous monitoring. The charger is a small dock; an empty ring is full again in about an hour, which most people do while they shower.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3><button type="button" class="acc__trigger" aria-expanded="false" aria-controls="faq-4" id="faq-4-btn">Do I need the membership?<span class="acc__icon"><i data-lucide="plus" aria-hidden="true"></i></span></button></h3>
+            <div class="acc__panel" id="faq-4" role="region" aria-labelledby="faq-4-btn"><div><p class="acc__body">No. The ring works without it: live vitals and a nightly summary are yours for good. Membership adds the readiness score, long-term trends, alerts and clinician sharing.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3><button type="button" class="acc__trigger" aria-expanded="false" aria-controls="faq-5" id="faq-5-btn">Which sizes are available?<span class="acc__icon"><i data-lucide="plus" aria-hidden="true"></i></span></button></h3>
+            <div class="acc__panel" id="faq-5" role="region" aria-labelledby="faq-5-btn"><div><p class="acc__body">US sizes 6 to 13. Every order ships with a free sizing kit first; your ring is made once you confirm the fit.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3><button type="button" class="acc__trigger" aria-expanded="false" aria-controls="faq-6" id="faq-6-btn">Where does my data live?<span class="acc__icon"><i data-lucide="plus" aria-hidden="true"></i></span></button></h3>
+            <div class="acc__panel" id="faq-6" role="region" aria-labelledby="faq-6-btn"><div><p class="acc__body">On the ring until it syncs, then encrypted on your phone and in your account. We do not sell it, we do not train on it, and you can export or delete everything in one tap.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         09 · Call to action + footer
+         ================================================================ -->
+    <section class="section cta" id="cta" data-section="cta" aria-labelledby="cta-title">
+      <div class="container cta__inner">
+        <div class="cta__panel card card--pad" data-reveal="scale">
+          <p class="eyebrow">Get early access</p>
+          <h2 class="t-3xl cta__title" id="cta-title">Ready to wear the <span class="t-grad">next generation</span>?</h2>
+          <p class="t-lead cta__lead">Join the list and we will send a free sizing kit when your batch opens.</p>
+          <form class="cta__form" data-subscribe action="#" method="post" novalidate>
+            <label class="visually-hidden" for="cta-email">Email address</label>
+            <input class="cta__input" id="cta-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+            <button class="btn btn--primary btn--lg" type="submit" data-magnetic>
+              <span data-subscribe-label>Request access</span>
+              <i data-lucide="arrow-right" class="lucide--arrow" aria-hidden="true"></i>
+            </button>
+            <p class="cta__note" data-subscribe-note aria-live="polite"></p>
+          </form>
+        </div>
+
+        <footer class="footer" data-reveal>
+          <div class="footer__grid">
+            <div class="footer__brand">
+              <a class="nav__brand" href="#hero" aria-label="Ringus — home">
+                <img class="nav__logo" src="/assets/logo.png" alt="" width="24" height="24">
+                <span class="nav__name">Ringus</span>
+              </a>
+              <p class="footer__tag t-muted">The digital medical ring.</p>
+            </div>
+            <nav class="footer__col" aria-label="Product">
+              <p class="footer__heading">Product</p>
+              <ul role="list">
+                <li><a href="#product">The ring</a></li>
+                <li><a href="#vitals">Vitals</a></li>
+                <li><a href="#membership">Membership</a></li>
+                <li><a href="#faq">FAQ</a></li>
+              </ul>
+            </nav>
+            <nav class="footer__col" aria-label="Company">
+              <p class="footer__heading">Company</p>
+              <ul role="list">
+                <li><a href="#proof">Validation</a></li>
+                <li><a href="#how">How it works</a></li>
+                <li><a href="mailto:press@ringus.health">Press</a></li>
+                <li><a href="mailto:hello@ringus.health">Contact</a></li>
+              </ul>
+            </nav>
+            <div class="footer__col">
+              <p class="footer__heading">Follow</p>
+              <ul class="footer__social cluster" role="list">
+                <li><a class="icon-btn" href="#" aria-label="Ringus on social"><i data-lucide="at-sign" aria-hidden="true"></i></a></li>
+                <li><a class="icon-btn" href="#" aria-label="Ringus community"><i data-lucide="message-circle" aria-hidden="true"></i></a></li>
+                <li><a class="icon-btn" href="mailto:hello@ringus.health" aria-label="Email Ringus"><i data-lucide="mail" aria-hidden="true"></i></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="footer__bar">
+            <p class="t-muted">&copy; <span data-year>2026</span> Ringus. All rights reserved.</p>
+            <ul class="footer__legal cluster" role="list">
+              <li><a href="#">Privacy</a></li>
+              <li><a href="#">Terms</a></li>
+              <li><button type="button" class="btn--link" data-to-top>Back to top <i data-lucide="arrow-up" aria-hidden="true"></i></button></li>
+            </ul>
+          </div>
+        </footer>
+      </div>
+      <p class="cta__watermark" aria-hidden="true">Ringus</p>
+    </section>
+
   </main>
 
-  <!-- WCAG 2.2.2 (Pause, Stop, Hide): the background loops forever, so it needs
-       a control. Kept out of the navbar so the nav matches the design, and out
-       of the aria-hidden video stage so it stays focusable. Each icon is
-       wrapped in a span so `hidden` survives Lucide replacing the <i>. -->
-  <button type="button" class="video-toggle" data-video-toggle>
+  <!-- Background video control (WCAG 2.2.2) -->
+  <button type="button" class="video-toggle" data-video-toggle aria-pressed="false">
     <span data-toggle-icon="pause"><i data-lucide="pause" aria-hidden="true"></i></span>
     <span data-toggle-icon="play" hidden><i data-lucide="play" aria-hidden="true"></i></span>
-    <span class="visually-hidden" data-toggle-label>Pause background</span>
+    <span class="visually-hidden" data-toggle-label>Pause background video</span>
   </button>
 </body>
 </html>

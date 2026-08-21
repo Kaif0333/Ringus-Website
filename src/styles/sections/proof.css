@@ -1,0 +1,314 @@
+/* ==========================================================================
+   06 · Proof — numbers and voices
+   Four validation figures on a shared baseline, then one quote at a time.
+   ========================================================================== */
+
+/* -- stats ----------------------------------------------------------------- */
+
+.proof__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  row-gap: var(--s-2);
+  max-width: 56rem;
+  margin-inline: auto;
+  margin-block-end: var(--s-6);
+  text-align: center;
+}
+
+/* The label row and the value row are shared across all four columns
+   (subgrid), so a label that wraps never pushes its number off the common
+   baseline. Browsers without subgrid simply stack label over value. */
+.proof__stat {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  min-width: 0;
+  padding-inline: var(--s-5);
+}
+
+.proof__stat + .proof__stat {
+  border-inline-start: 1px solid var(--line-1);
+}
+
+.proof__stat .stat__label {
+  align-self: end;
+  margin-block-start: 0;
+  text-wrap: balance;
+}
+
+.proof__stat .stat__value {
+  align-self: start;
+  font-size: var(--fs-2xl);
+}
+
+.proof__stat .stat__value small {
+  margin-inline-start: 0.125em;
+  font-size: var(--fs-md);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--text-3);
+}
+
+/* -- carousel -------------------------------------------------------------- */
+
+.proof__carousel {
+  position: relative;
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+/* A single minmax(0, 1fr) column: the track's min-content width (three
+   slides side by side) would otherwise leak upward and widen the page on
+   phones once the track stops being a scroll container. */
+.proof__viewport {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: var(--r-xl);
+}
+
+/* Until the script takes over, the track is a native scroll-snap strip so
+   every quote is reachable with a swipe or a trackpad. */
+.proof__track {
+  display: flex;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.proof__track::-webkit-scrollbar {
+  display: none;
+}
+
+.proof__slide {
+  display: flex;
+  flex: 0 0 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+  min-width: 0;
+  scroll-snap-align: start;
+  text-align: center;
+}
+
+/* One accent hairline along the top edge — the ring's LED, not a glow. */
+.proof__slide::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-line), transparent);
+  pointer-events: none;
+}
+
+.proof__quote-mark {
+  font-size: 1.75rem;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* The measure lives on the element that sets the size, so `ch` resolves
+   against the quote's own font-size rather than the inherited 16px. */
+.proof__quote p {
+  max-width: 36ch;
+  font-size: var(--fs-lg);
+  font-weight: 300;
+  line-height: 1.4;
+  letter-spacing: var(--ls-snug);
+  text-wrap: pretty;
+}
+
+.proof__by {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  margin-block-start: var(--s-2);
+}
+
+.proof__name {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.proof__role {
+  font-size: var(--fs-sm);
+}
+
+/* Script-driven state: the viewport clips, the track is translated. */
+[data-carousel].is-js .proof__track {
+  overflow: visible;
+  scroll-snap-type: none;
+  will-change: transform;
+}
+
+[data-carousel].is-js .proof__viewport {
+  touch-action: pan-y pinch-zoom;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* -- controls -------------------------------------------------------------- */
+
+.proof__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-4);
+  margin-block-start: var(--s-5);
+}
+
+.proof__dots {
+  display: flex;
+  align-items: center;
+}
+
+/* Every dot is a fixed 2.75rem (44px) target. The idle dot (::before) and the
+   accent pill (::after) cross-fade with transform/opacity only, so the row
+   never reflows on a slide change. */
+.proof__dot {
+  position: relative;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--r-pill);
+}
+
+.proof__dot::before,
+.proof__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 0.5rem;
+  border-radius: var(--r-pill);
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    opacity var(--dur-2) var(--ease-out);
+}
+
+.proof__dot::before {
+  width: 0.5rem;
+  background-color: var(--line-3);
+}
+
+.proof__dot::after {
+  width: 1.5rem;
+  background-color: var(--accent);
+  opacity: 0;
+  transform: scaleX(0.34);
+}
+
+.proof__dot:hover::before {
+  background-color: var(--text-2);
+}
+
+.proof__dot[aria-selected="true"]::before {
+  opacity: 0;
+}
+
+.proof__dot[aria-selected="true"]::after {
+  opacity: 1;
+  transform: none;
+}
+
+/* -- responsive ------------------------------------------------------------ */
+
+/* Standard laptops (1440×900): a tighter slide and an 18px quote keep
+   head + stats + tallest quote + controls ≈ 700px inside the ~720px budget. */
+@media (min-width: 64em) and (max-height: 58em) {
+  .proof__slide {
+    gap: var(--s-3);
+  }
+
+  .proof__quote p {
+    font-size: var(--fs-md);
+  }
+}
+
+/* Short laptops (1366×768, 1280×720): head + stats + carousel ≈ 545px so the
+   whole slide clears a 560px budget. The track is as tall as its tallest
+   quote; the 36ch measure on the 18px quote keeps every quote to 3 lines. */
+@media (min-width: 64em) and (max-height: 50em) {
+  .proof .section__head {
+    margin-block-end: var(--s-5);
+  }
+
+  .proof .section__head h2 {
+    font-size: clamp(1.75rem, 1rem + 2vw, 2.5rem);
+  }
+
+  .proof__stats {
+    margin-block-end: var(--s-5);
+  }
+
+  .proof__stat .stat__value {
+    font-size: var(--fs-xl);
+  }
+
+  .proof__stat .stat__value small {
+    font-size: var(--fs-base);
+  }
+
+  .proof .proof__slide {
+    gap: var(--s-2);
+    padding-block: var(--s-5);
+  }
+
+  .proof__quote-mark {
+    font-size: 1.25rem;
+  }
+
+  .proof__quote p {
+    font-size: var(--fs-md);
+  }
+
+  .proof__by {
+    margin-block-start: var(--s-1);
+  }
+
+  .proof__controls {
+    margin-block-start: var(--s-4);
+  }
+}
+
+@media (max-width: 64em) {
+  .proof__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .proof__stat {
+    padding-block: var(--s-4);
+  }
+
+  .proof__stat:nth-child(odd) {
+    border-inline-start: 0;
+  }
+
+  .proof__stat:nth-child(n + 3) {
+    border-block-start: 1px solid var(--line-1);
+  }
+}
+
+@media (max-width: 36em) {
+  .proof__stats {
+    margin-block-end: var(--s-7);
+  }
+
+  .proof__stat {
+    padding-inline: var(--s-3);
+  }
+
+  .proof__stat .stat__value {
+    font-size: var(--fs-xl);
+  }
+
+  .proof__stat .stat__value small {
+    font-size: var(--fs-base);
+  }
+
+  .proof__controls {
+    gap: var(--s-3);
+  }
+}

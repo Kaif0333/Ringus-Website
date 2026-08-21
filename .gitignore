@@ -1,3 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.vite/
+
+# Vercel
+.vercel/
+
+# Internal build notes (not part of the public site)
+reproduction_guide.md
+**/reproduction_guide.md
+
 # OS
 .DS_Store
 Thumbs.db
@@ -9,6 +23,6 @@ desktop.ini
 *.swp
 *.swo
 
-
 # Logs
 *.log
+npm-debug.log*

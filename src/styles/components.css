@@ -1,0 +1,612 @@
+/* ==========================================================================
+   Ringus — component primitives
+   Buttons, eyebrows, cards, pills, icon buttons, switches, accordions,
+   marquee, hotspots, reveal states. Sections compose these; they do not
+   restyle them.
+   ========================================================================== */
+
+/* -- icons (Lucide) -------------------------------------------------------- */
+
+[data-lucide],
+.lucide {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  vertical-align: -0.125em;
+}
+
+.lucide {
+  stroke-width: 1.75;
+}
+
+/* -- eyebrow --------------------------------------------------------------- */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.eyebrow--plain::before {
+  display: none;
+}
+
+/* -- buttons --------------------------------------------------------------- */
+
+.btn {
+  --btn-h: 3rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: var(--btn-h);
+  padding-inline: var(--s-6);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn .lucide {
+  font-size: 1.125em;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.btn:hover .lucide--arrow {
+  transform: translateX(3px);
+}
+
+.btn--primary {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.btn--primary:hover {
+  box-shadow: var(--glow-accent);
+}
+
+.btn--white {
+  background-color: #ffffff;
+  color: #0a0d13;
+}
+
+.btn--white:hover {
+  background-color: #ebeef3;
+}
+
+.btn--ink {
+  background-color: var(--ink-1);
+  color: #ffffff;
+}
+
+.btn--ink:hover {
+  background-color: #1a2131;
+}
+
+.btn--ghost {
+  background-color: var(--bg-glass);
+  border-color: var(--line-2);
+  color: var(--text-1);
+}
+
+.btn--ghost:hover {
+  background-color: var(--bg-glass-hover);
+  border-color: var(--line-3);
+}
+
+.btn--link {
+  min-height: 0;
+  padding: 0;
+  border-radius: var(--r-xs);
+  color: var(--text-1);
+  text-decoration: underline;
+  text-decoration-color: var(--line-3);
+  text-underline-offset: 0.3em;
+}
+
+.btn--link:hover {
+  text-decoration-color: var(--accent);
+}
+
+/* Touch: give text links a finger-sized hit box without changing layout. */
+@media (pointer: coarse) {
+  .btn--link {
+    padding-block: var(--s-3);
+    margin-block: calc(var(--s-3) * -1);
+  }
+}
+
+.btn--lg {
+  --btn-h: 3.5rem;
+  padding-inline: var(--s-7);
+  font-size: var(--fs-base);
+}
+
+.btn--sm {
+  --btn-h: 2.375rem;
+  padding-inline: var(--s-4);
+  font-size: var(--fs-xs);
+}
+
+/* Circular badge inside a pill button ("Get in touch →") */
+.btn__orb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin-inline-end: calc(var(--s-4) * -1);
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.92);
+  color: #0a0d13;
+  font-size: 1rem;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.btn--primary .btn__orb {
+  background-color: var(--accent-ink);
+  color: var(--accent);
+}
+
+.btn:hover .btn__orb {
+  transform: translateX(3px);
+}
+
+/* Icon-only circular button */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background-color: var(--bg-glass);
+  color: var(--text-1);
+  font-size: 1.125rem;
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out);
+}
+
+.icon-btn:hover {
+  background-color: var(--bg-glass-hover);
+  border-color: var(--line-3);
+}
+
+.icon-btn:active {
+  transform: scale(0.94);
+}
+
+/* -- cards ----------------------------------------------------------------- */
+
+.card {
+  position: relative;
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-xl);
+  background-color: var(--bg-2);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+
+.card--glass {
+  background-color: var(--bg-glass);
+}
+
+.card--pad {
+  padding: clamp(var(--s-5), 2.5vw, var(--s-7));
+}
+
+.card--interactive {
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    border-color var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out);
+}
+
+.card--interactive:hover {
+  transform: translateY(-4px);
+  border-color: var(--line-2);
+  box-shadow: var(--shadow-2);
+}
+
+/* Spotlight that follows the pointer (set --mx/--my from JS). */
+.card--spot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(184, 242, 107, 0.12),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out);
+  pointer-events: none;
+}
+
+.card--spot:hover::before {
+  opacity: 1;
+}
+
+.card--spot > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* -- pills / tags ---------------------------------------------------------- */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0.375rem var(--s-3);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-pill);
+  background-color: var(--bg-glass);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.pill--accent {
+  border-color: var(--accent-line);
+  background-color: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* -- stat ------------------------------------------------------------------ */
+
+.stat__value {
+  font-size: var(--fs-2xl);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat__label {
+  margin-block-start: var(--s-2);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* -- switch ---------------------------------------------------------------- */
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 3rem;
+  height: 1.75rem;
+  padding: 0.1875rem;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background-color: var(--bg-glass);
+  transition: background-color var(--dur-2) var(--ease-out);
+}
+
+.switch::after {
+  content: "";
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background-color: var(--text-1);
+  transition: transform var(--dur-2) var(--ease-spring);
+}
+
+.switch[aria-checked="true"] {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.switch[aria-checked="true"]::after {
+  background-color: var(--accent-ink);
+  transform: translateX(1.25rem);
+}
+
+/* -- accordion ------------------------------------------------------------- */
+
+.acc {
+  border-block-start: 1px solid var(--line-1);
+}
+
+.acc__item {
+  border-block-end: 1px solid var(--line-1);
+}
+
+.acc__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  width: 100%;
+  padding-block: var(--s-5);
+  text-align: left;
+  font-size: var(--fs-md);
+  font-weight: 400;
+  color: var(--text-1);
+  transition: color var(--dur-2) var(--ease-out);
+}
+
+.acc__trigger:hover {
+  color: var(--accent);
+}
+
+.acc__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  font-size: 0.875rem;
+  transition: transform var(--dur-3) var(--ease-out), background-color var(--dur-2), color var(--dur-2);
+}
+
+.acc__trigger[aria-expanded="true"] .acc__icon {
+  transform: rotate(45deg);
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.acc__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-3) var(--ease-out);
+}
+
+.acc__panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.acc__panel > div {
+  overflow: hidden;
+}
+
+.acc__body {
+  max-width: 56ch;
+  padding-block: 0 var(--s-5);
+  color: var(--text-2);
+  line-height: var(--lh-relaxed);
+}
+
+/* -- marquee --------------------------------------------------------------- */
+
+.marquee {
+  --marquee-dur: 38s;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  gap: var(--s-8);
+  width: max-content;
+  animation: marquee var(--marquee-dur) linear infinite;
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.marquee__item .lucide {
+  color: var(--accent);
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* -- hotspot (3D callouts) ------------------------------------------------- */
+
+.hotspot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--s-3);
+  max-width: 16rem;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+
+.hotspot.is-on {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hotspot__dot {
+  position: relative;
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 50%;
+  background-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.hotspot__dot::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-line);
+  animation: ping 2.2s var(--ease-out) infinite;
+}
+
+.hotspot__card {
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-md);
+  background-color: rgba(10, 13, 19, 0.82);
+  box-shadow: var(--shadow-1);
+}
+
+.hotspot__title {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.hotspot__text {
+  margin-block-start: 0.125rem;
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+}
+
+@keyframes ping {
+  0%   { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* -- scroll reveal states -------------------------------------------------- */
+
+/* Hidden only when JS has confirmed it can reveal (html.motion). Without it
+   every element is in its final, visible state.
+
+   The reveal itself is a non-filling animation rather than a transition to a
+   pinned end-state: once it finishes, the element has NO opacity/transform
+   declarations left from the reveal, so component hover lifts and their own
+   transitions (e.g. .card--interactive) keep working afterwards. */
+html.motion [data-reveal]:not(.is-in) {
+  opacity: 0;
+  transform: translateY(24px);
+  will-change: opacity, transform;
+}
+
+html.motion [data-reveal="fade"]:not(.is-in) {
+  transform: none;
+}
+
+html.motion [data-reveal="scale"]:not(.is-in) {
+  transform: translateY(12px) scale(0.96);
+}
+
+html.motion [data-reveal].is-in {
+  animation: reveal-up var(--dur-4) var(--ease-out) backwards;
+}
+
+html.motion [data-reveal="fade"].is-in {
+  animation-name: reveal-fade;
+}
+
+html.motion [data-reveal="scale"].is-in {
+  animation-name: reveal-scale;
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes reveal-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes reveal-scale {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* -- magnetic / cursor ----------------------------------------------------- */
+
+[data-magnetic] {
+  will-change: transform;
+}
+
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 300;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity var(--dur-2), width var(--dur-2) var(--ease-out), height var(--dur-2) var(--ease-out);
+}
+
+.cursor.is-on {
+  opacity: 1;
+}
+
+.cursor.is-hover {
+  width: 44px;
+  height: 44px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor {
+    display: none;
+  }
+}

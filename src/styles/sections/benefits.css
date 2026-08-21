@@ -1,0 +1,250 @@
+/* ==========================================================================
+   04 · Benefits — light surface
+   A split head, a single-row 12-column bento (4 / 5 / 3-stacked) and a
+   numbered progress hairline. `.theme-light` on the section remaps every
+   token, so nothing below knows it is sitting on paper.
+   ========================================================================== */
+
+/* -- head ------------------------------------------------------------------ */
+
+.benefits__eyebrow .lucide,
+.benefits__eyebrow [data-lucide] {
+  font-size: 1.125em;
+  color: var(--accent);
+}
+
+.benefits__aside {
+  --stack-gap: var(--s-5);
+}
+
+/* -- bento ----------------------------------------------------------------- */
+
+/* Two fr rows so the tiles stack in the last three columns while the two
+   image cards span both. With an auto-height grid the fr is sized from the
+   tallest content, so all four cards always share one outer rectangle. */
+.benefits__bento {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "metrics metrics metrics metrics lifestyle lifestyle lifestyle lifestyle lifestyle tile-a tile-a tile-a"
+    "metrics metrics metrics metrics lifestyle lifestyle lifestyle lifestyle lifestyle tile-b tile-b tile-b";
+  gap: var(--s-5);
+}
+
+.benefits__card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  isolation: isolate;   /* keeps the rounded clip honest while the media scales */
+}
+
+/* Specificity deliberately matches the global reveal end-state
+   (html.motion [data-reveal].is-in), which would otherwise pin `transform`
+   and replace the transition list once a card has revealed. Opacity and
+   transform keep the reveal's own timing; the lift rides the independent
+   `translate` channel so it never fights the reveal's `transform: none`. */
+html .benefits .benefits__bento > .benefits__card {
+  transition:
+    opacity var(--dur-4) var(--ease-out),
+    transform var(--dur-4) var(--ease-out),
+    translate var(--dur-3) var(--ease-out),
+    border-color var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out);
+}
+
+.benefits__card:hover {
+  translate: 0 -4px;
+}
+
+.benefits__card--metrics   { grid-area: metrics; }
+.benefits__card--lifestyle { grid-area: lifestyle; }
+.benefits__card--tile      { grid-area: tile-a; }
+.benefits__card--tile + .benefits__card--tile { grid-area: tile-b; }
+
+/* Media */
+.benefits__media {
+  flex: 0 0 auto;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+  transition: transform var(--dur-4) var(--ease-out);
+}
+
+/* The lifestyle frame sets the row: 16:9 by ratio, capped so the bento stays
+   one shallow band on laptops; object-fit crops the remainder. */
+.benefits__card--lifestyle .benefits__media {
+  aspect-ratio: 16 / 9;
+  max-height: clamp(9rem, 22vh, 16rem);
+}
+
+/* The metrics frame follows the row: a small basis so it never sets the row
+   height itself, then it grows to fill, which pins both bodies to the same
+   baseline. The ratio only governs the stacked (tablet / phone) layouts. */
+.benefits__card--metrics .benefits__media {
+  flex: 1 1 10rem;
+  min-height: 10rem;
+  aspect-ratio: 4 / 3;
+}
+
+.benefits__card:hover .benefits__media {
+  transform: scale(1.04);
+}
+
+/* Body */
+.benefits__body {
+  flex: 0 0 auto;
+  margin-block-start: auto;   /* bottom-anchored: the stat rows align across cards */
+  padding: var(--s-5);
+}
+
+/* Bento scale for the stat: the section headline keeps the 2xl step. */
+.benefits__card .stat__value {
+  font-size: var(--fs-xl);
+}
+
+.benefits__desc {
+  max-width: 34ch;
+  margin-block-start: var(--s-3);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--text-2);
+}
+
+/* Tiles: icon chip at the top, the stat pinned to the bottom. The inset
+   matches .benefits__body so the bento's shared bottom edge reads as one line. */
+.benefits__card--tile {
+  padding: var(--s-5);
+}
+
+.benefits__tile-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.125rem;
+}
+
+.benefits__card--tile .stat__value {
+  margin-block-start: auto;
+  padding-block-start: var(--s-3);   /* guaranteed breathing room when the row is tight */
+}
+
+/* -- numbered track -------------------------------------------------------- */
+
+.benefits__track {
+  margin-block-start: var(--s-6);
+}
+
+.benefits__nums {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-3);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ls-wide);
+  color: var(--text-3);
+}
+
+.benefits__progress {
+  height: 2px;
+  margin-block-start: var(--s-3);
+  overflow: hidden;
+  background-color: var(--line-1);
+}
+
+/* Resting width lives here; the script only scales it in from the left. */
+.benefits__progress-fill {
+  display: block;
+  width: 32%;
+  height: 100%;
+  background-color: var(--text-1);
+  transform-origin: left center;
+}
+
+/* -- responsive ------------------------------------------------------------ */
+
+/* Short laptops (1366×768, 1280×720): the whole section has to sit in one
+   viewport, so the headline steps down a size and the media band tightens. */
+@media (min-width: 64em) and (max-height: 50em) {
+  .benefits .section__head h2 {
+    font-size: clamp(2.25rem, 1.5rem + 1.25vw, 2.75rem);
+  }
+
+  .benefits__aside {
+    --stack-gap: var(--s-4);
+  }
+
+  .benefits__body,
+  .benefits__card--tile {
+    padding: var(--s-4) var(--s-5);
+  }
+
+  .benefits__card--lifestyle .benefits__media {
+    max-height: min(20vh, 10rem);
+  }
+
+  .benefits__card--metrics .benefits__media {
+    flex-basis: min(20vh, 10rem);
+    min-height: min(20vh, 10rem);
+  }
+
+  .benefits__track {
+    margin-block-start: var(--s-5);
+  }
+}
+
+/* Tablet: the two image cards stack full width, the tiles sit side by side. */
+@media (max-width: 64em) {
+  .benefits__bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+    grid-template-areas:
+      "metrics metrics"
+      "lifestyle lifestyle"
+      "tile-a tile-b";
+    gap: var(--s-4);
+  }
+
+  .benefits__card--metrics .benefits__media,
+  .benefits__card--lifestyle .benefits__media {
+    flex: 0 0 auto;
+    min-height: 0;
+    max-height: 24rem;
+  }
+
+  .benefits__card--tile {
+    padding: var(--s-5);
+  }
+}
+
+/* Phone: one column, squarer lifestyle frame, numbers allowed to wrap. */
+@media (max-width: 36em) {
+  .benefits__bento {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "metrics"
+      "lifestyle"
+      "tile-a"
+      "tile-b";
+  }
+
+  .benefits__card--lifestyle .benefits__media {
+    aspect-ratio: 4 / 3;
+  }
+
+  .benefits__desc {
+    max-width: none;
+  }
+
+  .benefits__nums {
+    flex-wrap: wrap;
+    gap: var(--s-4);
+  }
+}

@@ -1,0 +1,535 @@
+/* ==========================================================================
+   03 · Vitals — six signals on a bento, animated the way the app shows them
+   ========================================================================== */
+
+/* -- marquee strip (full-bleed, sits before .container) ------------------- */
+
+.vitals__marquee {
+  --marquee-dur: 46s;
+  padding-block: var(--s-2);
+  border-block: 1px solid var(--line-1);
+  margin-block-end: var(--s-6);
+}
+
+/* -- bento ----------------------------------------------------------------- */
+
+.vitals__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "hr    hr    spo2  temp"
+    "sleep hrv   ready ready";
+  gap: var(--s-4);
+}
+
+.vitals__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  min-width: 0;
+  padding: clamp(var(--s-5), 1.8vw, var(--s-6));
+}
+
+/* Specificity (0,3,1) on purpose: it ties the global reveal end-state
+   `html.motion [data-reveal].is-in`, which would otherwise replace the whole
+   transition list once the card is in. This one carries the reveal pair at
+   --dur-4 and the hover pair at --dur-3, and the lift rides `translate` so
+   the reveal keeps ownership of `transform`. */
+html .vitals .vitals__grid > .vitals__card {
+  transition:
+    opacity var(--dur-4) var(--ease-out),
+    transform var(--dur-4) var(--ease-out),
+    translate var(--dur-3) var(--ease-out),
+    border-color var(--dur-3) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .vitals__card:hover {
+    translate: 0 -4px;
+    border-color: var(--line-2);
+  }
+
+  .vitals__card--ready:hover {
+    border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+  }
+}
+
+/* -- card head ------------------------------------------------------------- */
+
+.vitals__card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.vitals__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+.vitals__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--text-2);
+}
+
+.vitals__card-head .pill {
+  flex-shrink: 0;
+  margin-inline-start: auto;
+}
+
+/* -- value / caption ------------------------------------------------------- */
+
+.vitals__value {
+  font-size: var(--fs-2xl);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+  white-space: nowrap;
+  color: var(--text-1);
+}
+
+.vitals__value small {
+  margin-inline-start: 0.2em;
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--text-3);
+}
+
+.vitals__caption {
+  margin-block-start: auto;
+  padding-block-start: var(--s-1);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-normal);
+  color: var(--text-3);
+}
+
+/* -- heart rate: value beside a live ECG ----------------------------------- */
+
+.vitals__card--hr {
+  grid-area: hr;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "head  head"
+    "value ecg"
+    "cap   cap";
+  column-gap: var(--s-6);
+  align-items: end;
+}
+
+.vitals__card--hr .vitals__card-head {
+  grid-area: head;
+  align-self: start;
+}
+
+.vitals__card--hr .vitals__value {
+  grid-area: value;
+}
+
+.vitals__card--hr .vitals__caption {
+  grid-area: cap;
+}
+
+.vitals__ecg {
+  grid-area: ecg;
+  width: 100%;
+  height: 3.5rem;
+  overflow: visible;
+  /* hairline baseline at the trace's resting y (44 / 80) */
+  background: linear-gradient(var(--line-1), var(--line-1)) 0 55% / 100% 1px no-repeat;
+}
+
+/* Comet sweep: dash period equals the path length (≈ 794 user units) so the
+   next sweep enters as the last one leaves — no gap, no jump. */
+.vitals__ecg-trace {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  stroke-dasharray: 150 644;
+  stroke-dashoffset: 794;
+  filter: drop-shadow(0 0 5px var(--accent-line));
+  animation: vitals-ecg 4.2s linear infinite;
+}
+
+.vitals__ecg.is-idle .vitals__ecg-trace {
+  animation-play-state: paused;
+}
+
+@keyframes vitals-ecg {
+  from { stroke-dashoffset: 794; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* -- blood oxygen: ring gauge with the caption alongside ------------------- */
+
+.vitals__card--spo2 {
+  grid-area: spo2;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "head  head"
+    "gauge cap";
+  column-gap: var(--s-4);
+  align-items: end;
+}
+
+.vitals__card--spo2 .vitals__card-head {
+  grid-area: head;
+  align-self: start;
+}
+
+.vitals__card--spo2 .vitals__caption {
+  grid-area: cap;
+}
+
+.vitals__gauge {
+  position: relative;
+  grid-area: gauge;
+  width: 7rem;
+  height: 7rem;
+}
+
+.vitals__gauge svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.vitals__gauge-track {
+  fill: none;
+  stroke: var(--line-2);
+  stroke-width: 8;
+}
+
+/* r = 52 → circumference 326.7. At rest the ring shows the final 98 %;
+   JS rewinds it to empty and fills it on first view. */
+.vitals__gauge-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 326.7;
+  stroke-dashoffset: 6.53;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.vitals__gauge-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.625rem;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+}
+
+.vitals__gauge-value small {
+  margin-inline-start: 0.1em;
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--text-3);
+}
+
+/* -- skin temperature: sparkline ------------------------------------------- */
+
+.vitals__card--temp {
+  grid-area: temp;
+}
+
+.vitals__spark {
+  width: 100%;
+  height: 2.25rem;
+  overflow: visible;
+}
+
+.vitals__spark-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* -- sleep: seven nights as bars ------------------------------------------- */
+
+.vitals__card--sleep {
+  grid-area: sleep;
+}
+
+.vitals__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-2);
+  height: 2.25rem;
+}
+
+.vitals__bars span {
+  flex: 1 1 0;
+  height: var(--h, 50%);
+  border-radius: var(--r-xs);
+  background-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  transform-origin: bottom;
+}
+
+.vitals__bars .is-peak {
+  background-color: var(--accent);
+}
+
+/* .is-armed is added by JS only when it is about to animate; without JS the
+   bars simply stand at their height. */
+.vitals__bars.is-armed span {
+  transform: scaleY(0);
+}
+
+.vitals__bars.is-live span {
+  transform: scaleY(1);
+  transition: transform var(--dur-4) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+
+/* -- HRV ------------------------------------------------------------------- */
+
+.vitals__card--hrv {
+  grid-area: hrv;
+}
+
+.vitals__trend {
+  display: flex;
+}
+
+/* -- readiness: one big number, accent-lit corner ------------------------- */
+
+.vitals__card--ready {
+  grid-area: ready;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "eyebrow eyebrow"
+    "num     text";
+  column-gap: var(--s-6);
+  align-items: end;
+  border-color: color-mix(in srgb, var(--accent) 22%, transparent);
+  background:
+    radial-gradient(80% 80% at 100% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+    var(--bg-2);
+}
+
+.vitals__card--ready .eyebrow {
+  grid-area: eyebrow;
+  align-self: start;
+}
+
+.vitals__ready {
+  grid-area: num;
+  font-size: clamp(4rem, 8vw, 6rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+  color: var(--accent);
+}
+
+.vitals__ready-text {
+  grid-area: text;
+  max-width: 36ch;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--text-2);
+}
+
+/* -- desktop density ------------------------------------------------------- */
+
+@media (min-width: 64em) {
+  .vitals__value {
+    font-size: clamp(2.5rem, 1.5rem + 1.4vw, 3rem);
+  }
+}
+
+/* Mid-height laptops (1440×900, 1536×864): measured at 903–909px of content
+   against 864–900px viewports, so trim ~60px here. Declared BEFORE the 50em
+   tier so the tighter tier still wins where both match. */
+@media (min-width: 64em) and (max-height: 58em) {
+  .vitals__marquee {
+    padding-block: var(--s-1);
+    margin-block-end: var(--s-4);
+  }
+
+  .vitals .section__head {
+    margin-block-end: var(--s-5);
+  }
+
+  .vitals .section__head h2 {
+    font-size: clamp(2rem, 1.2rem + 2.2vw, 2.75rem);
+  }
+
+  .vitals__card {
+    padding: var(--s-5);
+  }
+
+  .vitals__value {
+    font-size: 2.5rem;
+  }
+
+  .vitals__ecg {
+    height: 3rem;
+  }
+
+  .vitals__gauge {
+    width: 6.5rem;
+    height: 6.5rem;
+  }
+
+  .vitals__spark,
+  .vitals__bars {
+    height: 1.75rem;
+  }
+
+  .vitals__ready {
+    font-size: 5.25rem;
+  }
+
+  .vitals__caption {
+    line-height: 1.35;
+  }
+}
+
+/* Short laptops (1366×768, 1280×720): the whole section has to sit inside one
+   viewport, so the head and every visual tighten together. */
+@media (min-width: 64em) and (max-height: 50em) {
+  .vitals__marquee {
+    padding-block: var(--s-1);
+    margin-block-end: var(--s-3);
+  }
+
+  .vitals .section__head {
+    margin-block-end: var(--s-4);
+  }
+
+  .vitals .section__head h2 {
+    font-size: clamp(1.75rem, 1rem + 2vw, 2.5rem);
+  }
+
+  .vitals__card {
+    padding: var(--s-4) var(--s-5);
+  }
+
+  .vitals__value {
+    font-size: 2.25rem;
+  }
+
+  .vitals__ecg {
+    height: 2.5rem;
+  }
+
+  .vitals__gauge {
+    width: 6rem;
+    height: 6rem;
+  }
+
+  .vitals__gauge-value {
+    font-size: 1.375rem;
+  }
+
+  .vitals__spark,
+  .vitals__bars {
+    height: 1.5rem;
+  }
+
+  .vitals__ready {
+    font-size: 5rem;
+  }
+}
+
+/* -- tablet: two columns --------------------------------------------------- */
+
+@media (max-width: 64em) {
+  .vitals__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+    grid-template-areas:
+      "hr    hr"
+      "spo2  temp"
+      "sleep hrv"
+      "ready ready";
+  }
+
+  .vitals__card {
+    gap: var(--s-3);
+    padding: var(--s-5);
+  }
+}
+
+/* -- phone: single column -------------------------------------------------- */
+
+@media (max-width: 36em) {
+  .vitals__marquee {
+    margin-block-end: var(--s-5);
+  }
+
+  .vitals__grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: none;
+  }
+
+  .vitals__grid > .vitals__card {
+    grid-area: auto;
+  }
+
+  .vitals__card--hr {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      "head"
+      "value"
+      "ecg"
+      "cap";
+  }
+
+  .vitals__card--ready {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "eyebrow"
+      "num"
+      "text";
+    row-gap: var(--s-3);
+  }
+
+  .vitals__ready-text {
+    max-width: none;
+  }
+}
+
+/* -- reduced motion: the trace is simply drawn ---------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .vitals__ecg-trace {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+}

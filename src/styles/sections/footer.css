@@ -1,0 +1,357 @@
+/* ==========================================================================
+   09 · CTA + footer — the last slide
+   A centred capture panel under a slow-breathing accent wash, a four-column
+   footer, the legal bar, and the watermark that closes the page the way the
+   hero opened it.
+
+   Height tiers on laptops: spec rhythm by default, a moderate tier for
+   864–912 px screens (1536×864, 1440×900) that the site-wide short tier does
+   not reach, then the site-wide short-laptop tier below 800 px.
+   ========================================================================== */
+
+.cta {
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cta__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: var(--s-8);
+}
+
+/* -- panel ----------------------------------------------------------------- */
+
+.cta__panel {
+  width: 100%;
+  max-width: 58rem;
+  margin-inline: auto;
+  padding: clamp(var(--s-7), 5vw, var(--s-10));
+  border-color: var(--line-2);
+  text-align: center;
+  isolation: isolate;
+}
+
+/* The accent wash sits on a pseudo-element so it can breathe: the one motion
+   detail of this slide, a slow LED pulse under the ask. Only opacity moves;
+   under reduced motion base.css collapses the animation to its resting state. */
+.cta__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    60% 80% at 50% 0%,
+    color-mix(in srgb, var(--accent) 14%, transparent),
+    transparent 70%
+  );
+  opacity: 1;
+  pointer-events: none;
+  animation: cta-breathe 5.6s var(--ease-in-out) infinite alternate;
+}
+
+@keyframes cta-breathe {
+  from { opacity: 0.55; }
+  to   { opacity: 1; }
+}
+
+.cta__title {
+  margin-block: var(--s-4);
+  font-size: clamp(2.5rem, 1rem + 3.4vw, 4rem);
+}
+
+.cta__lead {
+  max-width: 34rem;
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+/* Glass capture: the hero pattern, centred */
+.cta__form {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  width: min(100%, 32rem);
+  margin-block-start: var(--s-6);
+  margin-inline: auto;
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-5);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background-color: var(--bg-glass);
+  text-align: start;
+  transition:
+    border-color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+
+.cta__form:focus-within {
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.cta__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-block: var(--s-3);
+  border: 0;
+  background: none;
+  color: var(--text-1);
+  font-size: var(--fs-base);
+}
+
+.cta__input::placeholder {
+  color: var(--text-3);
+}
+
+.cta__input:focus {
+  outline: none;
+}
+
+.cta__form .btn {
+  flex-shrink: 0;
+}
+
+/* Positioned by hero.css; only centred here to sit under the centred form. */
+.cta__note {
+  inset-inline: 0;
+  text-align: center;
+}
+
+/* -- footer ---------------------------------------------------------------- */
+
+.footer {
+  padding-block-start: var(--s-7);
+  border-block-start: 1px solid var(--line-1);
+}
+
+.footer__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+  gap: var(--s-6);
+  align-items: start;
+}
+
+.footer__tag {
+  max-width: 22rem;
+  margin-block-start: var(--s-3);
+  font-size: var(--fs-sm);
+}
+
+.footer__heading {
+  margin-block-end: var(--s-3);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.footer__col a:not(.icon-btn) {
+  display: block;
+  padding-block: var(--s-1);
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+  transition:
+    color var(--dur-2) var(--ease-out),
+    text-decoration-color var(--dur-2) var(--ease-out);
+}
+
+.footer__col a:not(.icon-btn):hover,
+.footer__col a:not(.icon-btn):focus-visible {
+  color: var(--text-1);
+  text-decoration-color: var(--accent);
+}
+
+.footer__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-5);
+  margin-block-start: var(--s-7);
+  padding-block-start: var(--s-5);
+  border-block-start: 1px solid var(--line-1);
+  font-size: var(--fs-xs);
+}
+
+.footer__legal {
+  --cluster-gap: var(--s-5);
+}
+
+.footer__legal a {
+  color: var(--text-3);
+  transition: color var(--dur-2) var(--ease-out);
+}
+
+.footer__legal a:hover,
+.footer__legal a:focus-visible {
+  color: var(--text-1);
+}
+
+/* Back to top inherits .btn--link; the arrow lifts on hover. */
+.footer__legal [data-to-top] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.footer__legal [data-to-top] .lucide {
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.footer__legal [data-to-top]:hover .lucide,
+.footer__legal [data-to-top]:focus-visible .lucide {
+  transform: translateY(-2px);
+}
+
+/* -- watermark ------------------------------------------------------------- */
+
+.cta__watermark {
+  position: absolute;
+  inset-inline: 0;
+  bottom: -0.18em;
+  z-index: 0;
+  text-align: center;
+  font-size: clamp(5rem, 19vw, 18rem);
+  font-weight: 500;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--text-1) 5%, transparent);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* -- responsive ------------------------------------------------------------ */
+
+/* Laptops 800–912 px tall (1536×864, 1440×900): ease the rhythm so the slide
+   fits ~720 px; the title caps at the same size as the other section heads. */
+@media (min-width: 64em) and (max-height: 57em) {
+  .cta__inner {
+    gap: var(--s-6);
+  }
+
+  .cta__panel {
+    padding-block: var(--s-6);
+  }
+
+  .cta__title {
+    margin-block: var(--s-3);
+    font-size: clamp(2.5rem, 1rem + 3.2vw, 3.5rem);
+  }
+
+  .cta__form {
+    margin-block-start: var(--s-5);
+  }
+
+  .footer {
+    padding-block-start: var(--s-6);
+  }
+
+  .footer__bar {
+    margin-block-start: var(--s-6);
+    padding-block-start: var(--s-4);
+  }
+}
+
+/* Short laptops (1366×768, 1280×720): ≈ 340 panel + 24 gap + 210 footer. */
+@media (min-width: 64em) and (max-height: 50em) {
+  .cta__inner {
+    gap: var(--s-5);
+  }
+
+  .cta__lead {
+    max-width: 36rem;
+    font-size: var(--fs-base);
+  }
+
+  .cta__form {
+    margin-block-start: var(--s-4);
+  }
+
+  .footer {
+    padding-block-start: var(--s-5);
+  }
+
+  .footer__heading {
+    margin-block-end: var(--s-2);
+  }
+
+  .footer__bar {
+    margin-block-start: var(--s-4);
+    padding-block-start: var(--s-3);
+  }
+}
+
+@media (max-width: 64em) {
+  .footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer__brand {
+    grid-column: 1 / -1;
+  }
+
+  /* Touch: 44 px rows for every text link */
+  .footer__col a:not(.icon-btn) {
+    padding-block: var(--s-3);
+  }
+
+  .footer__legal a,
+  .footer__legal [data-to-top] {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+}
+
+@media (max-width: 36em) {
+  .cta__panel {
+    padding: var(--s-7) var(--s-5);
+    border-radius: var(--r-lg);
+  }
+
+  .cta__form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--s-2);
+    padding: var(--s-3);
+    border-radius: var(--r-lg);
+  }
+
+  .cta__input {
+    padding-inline: var(--s-3);
+  }
+
+  .footer__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-5);
+  }
+
+  .footer__bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-4);
+  }
+
+  .cta__watermark {
+    font-size: clamp(4rem, 24vw, 8rem);
+  }
+}
+
+/* Touch: short legal links ("Terms") widen to a comfortable hit box. */
+@media (pointer: coarse) {
+  .footer__legal a {
+    display: inline-block;
+    min-width: 2.75rem;
+    padding-inline: var(--s-2);
+    text-align: center;
+  }
+}

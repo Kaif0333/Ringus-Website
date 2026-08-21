@@ -1,0 +1,271 @@
+/* ==========================================================================
+   Ringus — base
+   Reset, typography, document behaviour, accessibility defaults.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  font-family: var(--font-sans);
+  font-size: 100%;
+  font-weight: 400;
+  line-height: var(--lh-normal);
+  scroll-padding-top: var(--nav-h);
+  background-color: var(--bg-0);
+  color: var(--text-1);
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100svh;
+  font-family: var(--font-sans);
+  background-color: var(--bg-0);
+  color: var(--text-1);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul[role="list"],
+ol[role="list"] {
+  padding: 0;
+  list-style: none;
+}
+
+p,
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 400;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-snug);
+  text-wrap: balance;
+}
+
+pre,
+code,
+kbd,
+samp {
+  font-family: var(--font-mono);
+  font-size: 1em;
+}
+
+small {
+  font-size: var(--fs-sm);
+}
+
+strong {
+  font-weight: 600;
+}
+
+::selection {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--r-xs);
+}
+
+/* (No :target scroll-margin here — html's scroll-padding-top already clears
+   the fixed nav; declaring both would stack and land anchors too low.) */
+
+/* -- type utilities -------------------------------------------------------- */
+
+.t-display {
+  font-size: var(--fs-display);
+  font-weight: 300;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+}
+
+.t-3xl {
+  font-size: var(--fs-3xl);
+  font-weight: 300;
+  line-height: 1.06;
+  letter-spacing: var(--ls-tight);
+}
+
+.t-2xl {
+  font-size: var(--fs-2xl);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: var(--ls-tight);
+}
+
+.t-xl {
+  font-size: var(--fs-xl);
+  font-weight: 400;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-snug);
+}
+
+.t-lg {
+  font-size: var(--fs-lg);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.t-lead {
+  font-size: var(--fs-md);
+  line-height: var(--lh-relaxed);
+  color: var(--text-2);
+}
+
+.t-body {
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
+  color: var(--text-2);
+}
+
+.t-muted {
+  color: var(--text-3);
+}
+
+.t-accent {
+  color: var(--accent);
+}
+
+.t-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Gradient ink for a single emphasised word. */
+.t-grad {
+  background-image: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* -- document chrome ------------------------------------------------------- */
+
+/* Film grain over everything. Pure SVG noise, no image request, no blur. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 240px 240px;
+  mix-blend-mode: overlay;
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--s-4);
+  inset-inline-start: var(--s-4);
+  z-index: 200;
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-pill);
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 500;
+  transform: translateY(-200%);
+  transition: transform var(--dur-1) var(--ease-out);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* -- scroll behaviour ------------------------------------------------------ */
+
+/* Section-by-section feel on laptops and up. `proximity` (not mandatory) so a
+   section that is slightly taller than a short viewport can still be read. */
+@media (min-width: 64em) and (min-height: 42em) {
+  html {
+    scroll-snap-type: y proximity;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* -- motion preferences ---------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-snap-type: none;
+  }
+}

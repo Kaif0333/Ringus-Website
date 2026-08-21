@@ -1,0 +1,169 @@
+/* ==========================================================================
+   02 · Product — 3D ring
+   ========================================================================== */
+
+.product {
+  overflow: hidden;
+  background:
+    radial-gradient(60% 70% at 70% 50%, rgba(184, 242, 107, 0.06) 0%, rgba(184, 242, 107, 0) 70%),
+    var(--bg-0);
+}
+
+.product__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: clamp(var(--s-6), 5vw, var(--s-11));
+}
+
+.product__copy {
+  display: grid;
+  gap: var(--s-5);
+  min-width: 0;
+}
+
+.product__text {
+  max-width: 34rem;
+}
+
+.product__specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--s-6);
+  border-block-start: 1px solid var(--line-1);
+}
+
+.product__specs > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding-block: var(--s-3);
+  border-block-end: 1px solid var(--line-1);
+}
+
+.product__specs dt {
+  font-size: var(--fs-xs);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.product__specs dd {
+  font-size: var(--fs-md);
+  color: var(--text-1);
+}
+
+.product__xr {
+  --cluster-gap: var(--s-3);
+}
+
+.product__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--fs-xs);
+}
+
+/* Stage */
+.product__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: min(72vh, 40rem);
+  margin-inline: auto;
+}
+
+.product__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  cursor: grab;
+  touch-action: pan-y;
+  opacity: 0;
+  transition: opacity var(--dur-4) var(--ease-out);
+}
+
+.product__stage.is-ready .product__canvas {
+  opacity: 1;
+}
+
+.product__canvas.is-grabbing {
+  cursor: grabbing;
+}
+
+.product__hotspots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.product__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  z-index: -1;
+  width: 62%;
+  height: 12%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+.product__fallback {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+
+.product__fallback img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product__stage.is-fallback .product__hotspots,
+.product__stage.is-fallback .product__shadow {
+  display: none;
+}
+
+/* -- responsive ------------------------------------------------------------ */
+
+@media (min-width: 64em) and (max-height: 50em) {
+  .product__stage {
+    max-height: 62vh;
+  }
+
+  .product__copy {
+    gap: var(--s-4);
+  }
+}
+
+@media (max-width: 64em) {
+  .product__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product__stage {
+    order: -1;
+    max-width: 28rem;
+    max-height: none;
+  }
+
+  .hotspot {
+    max-width: 12rem;
+  }
+}
+
+@media (max-width: 36em) {
+  .product__specs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hotspot__card {
+    display: none;   /* dots only on phones; the copy carries the detail */
+  }
+}
